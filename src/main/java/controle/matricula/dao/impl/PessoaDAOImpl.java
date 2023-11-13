@@ -1,19 +1,17 @@
 package controle.matricula.dao.impl;
 
-
-import controle.matricula.dao.daobase.DAO;
-import controle.matricula.dao.daobase.PessoaDAO;
+import controle.matricula.dao.DAO;
 import controle.matricula.db.ConexaoDb;
 import controle.matricula.model.Pessoa;
-import controle.matricula.util.ETipo;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
+public class PessoaDAOImpl implements DAO<Pessoa> {
 
     private Connection getConnection() throws SQLException {
         return ConexaoDb.getConnection();
@@ -23,63 +21,11 @@ public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
     public Pessoa findById(int id) {
         try (var conn = getConnection();
              var stmt = conn.prepareStatement("SELECT * FROM pessoa WHERE idPessoa = ?")) {
-            stmt.setInt(1, id);
-
-            try (var rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    var pessoa = new Pessoa();
-                    pessoaResult(rs, pessoa);
-                    return pessoa;
-                } else {
-                    return null;
-                }
-            }
+            return getPessoa(id, stmt);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public Pessoa findByNome(String nome) {
-        try (var conn = getConnection();
-             var stmt = conn.prepareStatement("SELECT * FROM pessoa WHERE nomePessoa = ?")) {
-            stmt.setString(1, nome);
-
-            try (var rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    var pessoa = new Pessoa();
-                    pessoaResult(rs, pessoa);
-                    return pessoa;
-                } else {
-                    return null;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public List<String> obterTipoPessoa() {
-        var tiposPessoa = new ArrayList<String>();
-        var sql = "SELECT descricao FROM tipo_pessoa;";
-
-        try (var conn = getConnection();
-             var stmt = conn.prepareStatement(sql)) {
-
-            try (var resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    var descricaoTipo = resultSet.getString("descricao");
-                    tiposPessoa.add(descricaoTipo);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return tiposPessoa;
     }
 
 
@@ -93,6 +39,7 @@ public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
                 var pessoa = new Pessoa();
                 pessoaResult(rs, pessoa);
                 pessoas.add(pessoa);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,7 +60,7 @@ public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
             stmt.setString(4, pessoa.getTelefone());
             stmt.setString(5, pessoa.getCpf());
             stmt.setString(6, pessoa.getEmail());
-            stmt.setString(7, pessoa.getTipo().getDescricao());
+            stmt.setString(7, pessoa.getTipo());
 
             stmt.executeUpdate();
             return true;
@@ -143,6 +90,84 @@ public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
         }
     }
 
+    public Pessoa findByNome(String nome) {
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement("SELECT * FROM pessoa WHERE nomePessoa = ?")) {
+            stmt.setString(1, nome);
+
+            try (var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    var pessoa = new Pessoa();
+                    pessoaResult(rs, pessoa);
+                    return pessoa;
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Pessoa getByProfessor(int id) {
+        var sql = "SELECT * FROM pessoa WHERE idPessoa = ? AND tipo = 'Professor';";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            return getPessoa(id, stmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Pessoa getByAluno(int id) {
+        var sql = "SELECT * FROM pessoa WHERE idPessoa = ? AND tipo = 'Aluno';";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            return getPessoa(id, stmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Pessoa getPessoa(int id, PreparedStatement stmt) throws SQLException {
+        stmt.setInt(1, id);
+
+        try (var rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                var pessoa = new Pessoa();
+                pessoaResult(rs, pessoa);
+                return pessoa;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public List<String> obterTipoPessoa() {
+        var tiposPessoa = new ArrayList<String>();
+        var sql = "SELECT descricao FROM tipo_pessoa;";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+
+            try (var resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                    var descricaoTipo = resultSet.getString("descricao");
+                    tiposPessoa.add(descricaoTipo);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tiposPessoa;
+    }
+
     private void pessoaResult(ResultSet rs, Pessoa pessoa) throws SQLException {
         pessoa.setIdPessoa(rs.getInt("idPessoa"));
         pessoa.setNomePessoa(rs.getString("nomePessoa"));
@@ -151,6 +176,6 @@ public class PessoaDAOImpl implements DAO<Pessoa>, PessoaDAO {
         pessoa.setTelefone(rs.getString("telefone"));
         pessoa.setCpf(rs.getString("cpf"));
         pessoa.setEmail(rs.getString("email"));
+        pessoa.setTipo(rs.getString("tipo"));
     }
-
 }

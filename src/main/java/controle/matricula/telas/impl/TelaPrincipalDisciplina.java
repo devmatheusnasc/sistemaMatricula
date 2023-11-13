@@ -1,15 +1,23 @@
 package controle.matricula.telas.impl;
 
-import controle.matricula.dao.daobase.DAO;
+import controle.matricula.dao.impl.DisciplinaDAOImpl;
+import controle.matricula.dao.impl.UsuarioDAOImpl;
 import controle.matricula.model.Disciplina;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
+import controle.matricula.util.table.TableDisciplina;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina> {
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
+public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, DisciplinaDAOImpl> {
+
+    private final String[] colunas = new String[]{"Codigo", "Nome", "Carga Horária", "Professor", "Limite Alunos"};
 
     public TelaPrincipalDisciplina() {
         super();
@@ -17,14 +25,18 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina> {
     }
 
     @Override
-    protected void listar(ActionEvent evt) {
-
+    protected void listarAction(ActionEvent evt) {
+            var disciplinaDAO = new DisciplinaDAOImpl();
+            listar(disciplinaDAO, colunas);
     }
 
     @Override
-    protected List<Disciplina> listarTodos(DAO<Disciplina> dao) {
-        return null;
+    protected TableModel criarTableModel(List<Disciplina> itens) {
+        return new TableDisciplina(itens, colunas);
     }
+
+
+
 
     @Override
     protected void inserir(ActionEvent evt) {
@@ -37,8 +49,20 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina> {
     }
 
     @Override
-    protected void excluir(ActionEvent evt) {
+    protected void excluirAction(ActionEvent evt) {
+        var item = excluir();
 
+        if (item != -1) {
+            var disciplina = new DisciplinaDAOImpl();
+            var delete = disciplina.delete(item);
+
+            if (delete) {
+                showMessageDialog(null, "Disciplina excluída com sucesso.");
+                listar(disciplina, colunas);
+            } else {
+                showMessageDialog(null, "Erro ao excluir a Disciplina.", "Erro", ERROR_MESSAGE);
+            }
+        }
     }
 
     @Override

@@ -1,7 +1,5 @@
 package controle.matricula.model;
 
-import controle.matricula.util.ETipo;
-
 public class Pessoa {
 
     private int idPessoa;
@@ -11,14 +9,14 @@ public class Pessoa {
     private String telefone;
     private String cpf;
     private String email;
-    private ETipo tipo;
+    private String tipo;
 
     public Pessoa() {
 
     }
 
     public Pessoa(int idPessoa, String nomePessoa, String endereco, String uf, String telefone, String cpf,
-                  String email, ETipo tipo) {
+                  String email, String tipo) {
         this.idPessoa = idPessoa;
         this.nomePessoa = nomePessoa;
         this.endereco = endereco;
@@ -85,11 +83,11 @@ public class Pessoa {
         this.email = email;
     }
 
-    public ETipo getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(ETipo tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 }

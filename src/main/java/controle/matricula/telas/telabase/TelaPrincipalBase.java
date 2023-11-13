@@ -1,11 +1,15 @@
 package controle.matricula.telas.telabase;
 
-import controle.matricula.dao.daobase.DAO;
+import controle.matricula.dao.DAO;
 import controle.matricula.telas.impl.TelaMenu;
+import controle.matricula.util.table.TableColumnAdjuster;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +20,16 @@ import static java.awt.Font.BOLD;
 import static java.lang.Short.MAX_VALUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
+import static java.util.stream.IntStream.range;
 import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.GroupLayout.Alignment.*;
 import static javax.swing.GroupLayout.DEFAULT_SIZE;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
+import static javax.swing.JOptionPane.*;
 import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
+import static javax.swing.UIManager.getInstalledLookAndFeels;
 
-public abstract class TelaPrincipalBase<T> extends JFrame {
+public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
 
     protected JTable tabelaPrincipal;
     protected JTextField campoPesquisar;
@@ -37,7 +44,7 @@ public abstract class TelaPrincipalBase<T> extends JFrame {
         initComponents();
         pack();
         setLocationRelativeTo(null);
-        setSize(650, 480);
+        setSize(750, 500);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
     }
@@ -102,13 +109,13 @@ public abstract class TelaPrincipalBase<T> extends JFrame {
         campoPesquisar.addActionListener(this::listarComEnter);
         btnPesquisar.setText("Pesquisar");
         btnPesquisar.setFocusable(false);
-        btnPesquisar.addActionListener(this::listar);
+        btnPesquisar.addActionListener(this::listarAction);
 
         btnInserir.addActionListener(this::inserir);
 
         btnAtualizar.addActionListener(this::editar);
 
-        btnExcluir.addActionListener(this::excluir);
+        btnExcluir.addActionListener(this::excluirAction);
 
 
         var jPanel12Layout = new GroupLayout(panelCampos);
@@ -208,15 +215,60 @@ public abstract class TelaPrincipalBase<T> extends JFrame {
         );
     }
 
-    protected abstract void listar(ActionEvent evt);
+    protected void listar(D dao, String[] colunas) {
+        try {
+            var input = campoPesquisar.getText();
+            List<T> itens = new ArrayList<>();
 
-    protected abstract List<T> listarTodos(DAO<T> dao);
+            if (!input.isEmpty()) {
+                var item = dao.findById(Integer.parseInt(input));
+                if (item != null) {
+                    itens.add(item);
+                } else {
+                    showMessageDialog(null, "Item não encontrado.", AVISO, WARNING_MESSAGE);
+                }
+            } else {
+                itens = dao.findAll();
+            }
+
+            var newTableModel = criarTableModel(itens);
+            tabelaPrincipal.setModel(newTableModel);
+            range(0, colunas.length)
+                    .forEach(i -> tabelaPrincipal.getColumnModel().getColumn(i).setHeaderValue(colunas[i]));
+            ajustarColunas();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessageDialog(null, "Erro ao Pesquisar.", "Erro", ERROR_MESSAGE);
+        }
+    }
+
+    protected abstract TableModel criarTableModel(List<T> itens);
+
+    private void ajustarColunas() {
+        var adjuster = new TableColumnAdjuster(tabelaPrincipal);
+        adjuster.adjustColumns();
+    }
+
+    protected int excluir() {
+        var selectedRow = tabelaPrincipal.getSelectedRow();
+        if (selectedRow < 0) {
+            showMessageDialog(null, "Selecione um item para excluir.", AVISO, WARNING_MESSAGE);
+            return -1;
+        }
+
+        var confirmar = showConfirmDialog(null,
+                "Tem certeza de que deseja excluir este item?", "Confirmação", YES_NO_OPTION);
+        if (confirmar != YES_OPTION) {
+            return -1;
+        }
+
+        return (int) tabelaPrincipal.getValueAt(selectedRow, 0);
+    }
 
     protected abstract void inserir(ActionEvent evt);
 
     protected abstract void editar(ActionEvent evt);
-
-    protected abstract void excluir(ActionEvent evt);
 
     protected abstract JPanel criarPainel(JTextField string, JTextField string2, JTextField string3, JTextField string4, JButton salvarButton);
 
@@ -237,14 +289,18 @@ public abstract class TelaPrincipalBase<T> extends JFrame {
     protected abstract void configurarCampoPesquisa();
 
     private void listarComEnter(ActionEvent e) {
-        listar(new ActionEvent(e.getSource(), e.getID(), null));
+        listarAction(new ActionEvent(e.getSource(), e.getID(), null));
     }
+
+    protected abstract void listarAction(ActionEvent env);
+
+    protected abstract void excluirAction(ActionEvent evt);
 
     protected static void tela(Class<? extends JFrame> tela) {
 
         if (!telaInstances.containsKey(tela)) {
             try {
-                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                for (LookAndFeelInfo info : getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
                         UIManager.setLookAndFeel(info.getClassName());
                         break;

@@ -1,4 +1,4 @@
-package controle.matricula.dao.daobase;
+package controle.matricula.dao;
 
 import java.util.List;
 

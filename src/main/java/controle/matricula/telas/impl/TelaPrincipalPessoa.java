@@ -1,16 +1,24 @@
 package controle.matricula.telas.impl;
 
-import controle.matricula.dao.daobase.DAO;
+import controle.matricula.dao.impl.DisciplinaDAOImpl;
 import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Matricula;
+import controle.matricula.model.Pessoa;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
+import controle.matricula.util.table.TablePessoa;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class TelaPrincipalPessoa extends TelaPrincipalBase<Matricula> {
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
+public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl> {
+
+    private final String[] colunas = new String[]{"ID", "Nome", "Endereço", "UF", "Telefone", "CPF", "E-mail", "Tipo"};
 
     public TelaPrincipalPessoa() {
         super();
@@ -18,16 +26,18 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Matricula> {
     }
 
     @Override
-    protected void listar(ActionEvent evt) {
-        var ok = new PessoaDAOImpl();
-        var ok1 = ok.obterTipoPessoa();
-        System.out.println(ok1);
+    protected void listarAction(ActionEvent evt) {
+        var pessoaDAO = new PessoaDAOImpl();
+
+        listar(pessoaDAO, colunas);
     }
 
     @Override
-    protected List<Matricula> listarTodos(DAO<Matricula> dao) {
-        return null;
+    protected TableModel criarTableModel(List<Pessoa> itens) {
+        return new TablePessoa(itens, colunas);
     }
+
+
 
     @Override
     protected void inserir(ActionEvent evt) {
@@ -41,8 +51,20 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Matricula> {
     }
 
     @Override
-    protected void excluir(ActionEvent evt) {
+    protected void excluirAction(ActionEvent evt) {
+        var item = excluir();
 
+        if (item != -1) {
+            var pessoa = new PessoaDAOImpl();
+            var delete = pessoa.delete(item);
+
+            if (delete) {
+                showMessageDialog(null, "Pessoa excluída com sucesso.");
+                listar(pessoa, colunas);
+            } else {
+                showMessageDialog(null, "Erro ao excluir a Pessoa.", "Erro", ERROR_MESSAGE);
+            }
+        }
     }
 
     @Override
@@ -71,7 +93,7 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Matricula> {
     }
 
     @Override
-    protected Matricula criar(String string, String string2, String string3, String string4) {
+    protected Pessoa criar(String string, String string2, String string3, String string4) {
         return null;
     }
 

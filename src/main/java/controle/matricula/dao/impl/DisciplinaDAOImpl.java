@@ -1,7 +1,6 @@
 package controle.matricula.dao.impl;
 
-import controle.matricula.dao.daobase.DAO;
-import controle.matricula.dao.daobase.DisciplinaDAO;
+import controle.matricula.dao.DAO;
 import controle.matricula.db.ConexaoDb;
 import controle.matricula.model.Disciplina;
 
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisciplinaDAOImpl implements DAO<Disciplina>, DisciplinaDAO {
+public class DisciplinaDAOImpl implements DAO<Disciplina> {
 
     private Connection getConnection() throws SQLException {
         return ConexaoDb.getConnection();
@@ -38,7 +37,6 @@ public class DisciplinaDAOImpl implements DAO<Disciplina>, DisciplinaDAO {
         }
     }
 
-    @Override
     public Disciplina findByNome(String nome) {
         try (var conn = getConnection();
              var stmt = conn.prepareStatement("SELECT * FROM disciplina WHERE nomeDisciplina = ?")) {

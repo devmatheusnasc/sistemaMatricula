@@ -1,6 +1,6 @@
 package controle.matricula.dao.impl;
 
-import controle.matricula.dao.daobase.DAO;
+import controle.matricula.dao.DAO;
 import controle.matricula.db.ConexaoDb;
 import controle.matricula.model.Disciplina;
 import controle.matricula.model.Matricula;

@@ -1,5 +1,9 @@
 
+]	java:S1250"<This block of commented-out lines of code should be removed.(í®§¥úÿÿÿÿ8ìÍ®¼1
+X	java:S125H"<This block of commented-out lines of code should be removed.(Ûñì–8ŸìÍ®¼1
 W
-java:S1854ô"9Remove this useless assignment to local variable "valor".(âÓÓü8¶ÈÁŸ¼1
+java:S1854Ó"9Remove this useless assignment to local variable "valor".(âÓÓü8©ìÍ®¼1
 H
-java:S1481ô"*Remove this unused "valor" local variable.(âÓÓü8»ÈÁŸ¼1
+java:S1481Ó"*Remove this unused "valor" local variable.(âÓÓü8ªìÍ®¼1
+Y
+java:S1117ö";Rename "colunas" which hides the field declared at line 25.(’²¬û8®ìÍ®¼1

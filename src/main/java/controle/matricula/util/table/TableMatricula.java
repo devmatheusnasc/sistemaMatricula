@@ -1,4 +1,4 @@
-package controle.matricula.util;
+package controle.matricula.util.table;
 
 import controle.matricula.model.Matricula;
 
@@ -8,8 +8,8 @@ import java.util.List;
 
 public class TableMatricula extends AbstractTableModel {
 
-    private List<Matricula> dados;
-    private String[] colunas;
+    private final List<Matricula> dados;
+    private final String[] colunas;
 
     public TableMatricula(List<Matricula> dados, String[] colunas) {
         this.dados = dados;

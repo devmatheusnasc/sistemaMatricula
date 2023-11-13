@@ -1,27 +1,28 @@
 package controle.matricula.telas.impl;
 
-import controle.matricula.dao.daobase.DAO;
 import controle.matricula.dao.impl.DisciplinaDAOImpl;
 import controle.matricula.dao.impl.MatriculaDAOImpl;
 import controle.matricula.dao.impl.PessoaDAOImpl;
+import controle.matricula.dao.impl.UsuarioDAOImpl;
 import controle.matricula.model.Matricula;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
-import controle.matricula.util.TableMatricula;
+import controle.matricula.util.table.TableMatricula;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
-import static java.util.stream.IntStream.range;
 import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.*;
 
-public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula> {
+public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, MatriculaDAOImpl> {
+
+    private final String[] colunas = new String[]{"ID", "Disciplina", "Data da Matricula", "Valor Pago", "Aluno", "Periodo"};
 
     public TelaPrincipalMatricula() {
         super();
@@ -29,145 +30,111 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula> {
     }
 
     @Override
-    protected void listar(ActionEvent evt) {
-        try {
-            var matriculaDAO = new MatriculaDAOImpl();
-            var input = campoPesquisar.getText();
-            List<Matricula> matriculas = new ArrayList<>();
-            var colunas = new String[]{"ID", "Disciplina", "Data da Matricula", "Valor Pago", "Aluno", "Periodo"};
-
-            if (!input.isEmpty()) {
-                var matricula = matriculaDAO.findById(Integer.parseInt(input));
-                if (matricula != null) {
-                    matriculas.add(matricula);
-                } else {
-                    showMessageDialog(null, "Matrícula não encontrada.",
-                            AVISO, WARNING_MESSAGE);
-                }
-            } else {
-                matriculas = listarTodos(matriculaDAO);
-            }
-
-            var newTableModel = new TableMatricula(matriculas, colunas);
-            tabelaPrincipal.setModel(newTableModel);
-            range(0, colunas.length)
-                    .forEach(i -> tabelaPrincipal.getColumnModel().getColumn(i).setHeaderValue(colunas[i]));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showMessageDialog(null, "Erro ao Pesquisar.",
-                    "Erro", ERROR_MESSAGE);
-        }
+    protected void listarAction(ActionEvent evt) {
+        var matriculaDAO = new MatriculaDAOImpl();
+        listar(matriculaDAO, colunas);
     }
 
     @Override
-    protected List<Matricula> listarTodos(DAO<Matricula> matriculaDAO) {
-        return matriculaDAO.findAll();
+    protected TableModel criarTableModel(List<Matricula> itens) {
+        return new TableMatricula(itens, colunas);
+
     }
+
+
 
     @Override
     protected void inserir(ActionEvent evt) {
-        var frame = new JFrame("Inserir Matrícula");
-        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        var disciplinaField = new JTextField(20);
-        var valorPagoField = new JTextField(10);
-        var alunoField = new JTextField(20);
-        var periodoField = new JTextField(10);
-
-        var salvarButton = new JButton("Salvar");
-        salvarButton.addActionListener(e -> {
-            if (salvar(disciplinaField, valorPagoField, alunoField, periodoField, frame)) {
-                listar(evt);
-            }
-        });
-
-        var panel = criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton);
-
-        frame.add(panel);
-        frame.pack();
-        frame.setVisible(true);
+//        var frame = new JFrame("Inserir Matrícula");
+//        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//
+//        var disciplinaField = new JTextField(20);
+//        var valorPagoField = new JTextField(10);
+//        var alunoField = new JTextField(20);
+//        var periodoField = new JTextField(10);
+//
+//        var salvarButton = new JButton("Salvar");
+//        salvarButton.addActionListener(e -> {
+//            if (salvar(disciplinaField, valorPagoField, alunoField, periodoField, frame)) {
+//                listar(evt);
+//            }
+//        });
+//
+//        var panel = criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton);
+//
+//        frame.add(panel);
+//        frame.pack();
+//        frame.setVisible(true);
     }
 
     @Override
     protected void editar(ActionEvent evt) {
-        var selectedRow = tabelaPrincipal.getSelectedRow();
-
-        if (selectedRow >= 0) {
-            var idMatricula = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
-            var matriculaDAO = new MatriculaDAOImpl();
-
-            var matriculaExistente = matriculaDAO.findById(idMatricula);
-
-            if (matriculaExistente != null) {
-                var frame = new JFrame("Editar Matrícula");
-                frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-                var disciplinaField = new JTextField(20);
-                var valorPagoField = new JTextField(10);
-                var alunoField = new JTextField(20);
-                var periodoField = new JTextField(10);
-
-                var salvarButton = new JButton("Atualizar");
-                salvarButton.addActionListener(e -> {
-                    var disciplina = disciplinaField.getText();
-                    var valorPagoText = valorPagoField.getText();
-                    var aluno = alunoField.getText();
-                    var periodo = periodoField.getText();
-
-                    if (validarCampos(disciplinaField, valorPagoField, alunoField, periodoField)) {
-                        var matriculaAtualizada = criar(disciplina, valorPagoText, aluno, periodo);
-
-                        matriculaAtualizada.setIdMat(idMatricula);
-
-                        var matricula = new MatriculaDAOImpl();
-                        var atualizado = matricula.update(matriculaAtualizada);
-
-                        if (atualizado) {
-                            JOptionPane.showMessageDialog(null, "Matrícula atualizada com sucesso.");
-                            frame.dispose();
-                            listar(evt);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Erro ao atualizar a matrícula.", "Erro", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-                    }
-                });
-                frame.add(criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton));
-                frame.pack();
-                frame.setVisible(true);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Selecione uma matrícula para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
-        }
+//        var selectedRow = tabelaPrincipal.getSelectedRow();
+//
+//        if (selectedRow >= 0) {
+//            var idMatricula = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
+//            var matriculaDAO = new MatriculaDAOImpl();
+//
+//            var matriculaExistente = matriculaDAO.findById(idMatricula);
+//
+//            if (matriculaExistente != null) {
+//                var frame = new JFrame("Editar Matrícula");
+//                frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//
+//                var disciplinaField = new JTextField(20);
+//                var valorPagoField = new JTextField(10);
+//                var alunoField = new JTextField(20);
+//                var periodoField = new JTextField(10);
+//
+//                var salvarButton = new JButton("Atualizar");
+//                salvarButton.addActionListener(e -> {
+//                    var disciplina = disciplinaField.getText();
+//                    var valorPagoText = valorPagoField.getText();
+//                    var aluno = alunoField.getText();
+//                    var periodo = periodoField.getText();
+//
+//                    if (validarCampos(disciplinaField, valorPagoField, alunoField, periodoField)) {
+//                        var matriculaAtualizada = criar(disciplina, valorPagoText, aluno, periodo);
+//
+//                        matriculaAtualizada.setIdMat(idMatricula);
+//
+//                        var matricula = new MatriculaDAOImpl();
+//                        var atualizado = matricula.update(matriculaAtualizada);
+//
+//                        if (atualizado) {
+//                            JOptionPane.showMessageDialog(null, "Matrícula atualizada com sucesso.");
+//                            frame.dispose();
+//                            listar(evt);
+//                        } else {
+//                            JOptionPane.showMessageDialog(null, "Erro ao atualizar a matrícula.", "Erro", JOptionPane.ERROR_MESSAGE);
+//                        }
+//                    } else {
+//                        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+//                    }
+//                });
+//                frame.add(criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton));
+//                frame.pack();
+//                frame.setVisible(true);
+//            }
+//        } else {
+//            JOptionPane.showMessageDialog(null, "Selecione uma matrícula para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
+//        }
     }
 
     @Override
-    protected void excluir(ActionEvent evt) {
+    protected void excluirAction(ActionEvent evt) {
+        var id = excluir();
 
-        var selectedRow = tabelaPrincipal.getSelectedRow();
-        if (selectedRow < 0) {
-            showMessageDialog(null, "Selecione uma matrícula para excluir.",
-                    AVISO, WARNING_MESSAGE);
-            return;
-        }
+        if (id != -1) {
+            var matriculaDAO = new MatriculaDAOImpl();
+            var delete = matriculaDAO.delete(id);
 
-        var confirmar = showConfirmDialog(null,
-                "Tem certeza de que deseja excluir esta matrícula?", "Confirmação", YES_NO_OPTION);
-        if (confirmar != YES_OPTION) {
-            return;
-        }
-
-        var idMatricula = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
-        var matriculaDAO = new MatriculaDAOImpl();
-        var delete = matriculaDAO.delete(idMatricula);
-
-        if (delete) {
-            showMessageDialog(null, "Matrícula excluída com sucesso.");
-            listar(evt);
-        } else {
-            showMessageDialog(null, "Erro ao excluir a matrícula.", "Erro", ERROR_MESSAGE);
+            if (delete) {
+                showMessageDialog(null, "Matrícula excluída com sucesso.");
+                listar(matriculaDAO, colunas);
+            } else {
+                showMessageDialog(null, "Erro ao excluir a Matrícula.", "Erro", ERROR_MESSAGE);
+            }
         }
     }
 

@@ -9,10 +9,10 @@ public class ConexaoDb {
     }
 
     public static Connection getConnection() throws SQLException {
+        String jdbcUrl = "jdbc:mysql://172.17.0.5:3306/controle_matriculas";
+        String username = "root";
+        String password = "root";
         try {
-            String jdbcUrl = "jdbc:mysql://172.17.0.5:3306/controle_matriculas";
-            String username = "root";
-            String password = "root";
             return DriverManager.getConnection(jdbcUrl, username, password);
 
         } catch (SQLException e) {
