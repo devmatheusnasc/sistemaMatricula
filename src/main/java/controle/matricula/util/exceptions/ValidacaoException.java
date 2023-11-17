@@ -1,0 +1,8 @@
+package controle.matricula.util.exceptions;
+
+public class ValidacaoException extends RuntimeException {
+
+    public ValidacaoException(String message) {
+        super(message);
+    }
+}

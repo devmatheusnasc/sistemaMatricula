@@ -22,10 +22,8 @@ import static javax.swing.UIManager.setLookAndFeel;
 
 public class TelaLogin extends javax.swing.JFrame {
 
-
     private JPasswordField campoSenha;
     private JTextField campoLogin;
-    private static TelaLogin telaLoginInstance;
 
     public TelaLogin() {
         initComponents();
@@ -145,6 +143,7 @@ public class TelaLogin extends javax.swing.JFrame {
     }
 
     public static void encerrarSecao(JFrame telaAtual) {
+        TelaLogin telaLoginInstance;
         if (telaAtual != null) {
             telaAtual.dispose();
         }

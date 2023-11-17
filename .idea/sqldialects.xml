@@ -5,5 +5,6 @@
     <file url="file://$PROJECT_DIR$/src/main/java/controle/matricula/dao/impl/MatriculaDAOImpl.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/controle/matricula/dao/impl/PessoaDAOImpl.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/controle/matricula/dao/impl/UsuarioDAOImpl.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/controle/matricula/db/create-table.sql" dialect="GenericSQL" />
   </component>
 </project>

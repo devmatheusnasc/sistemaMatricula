@@ -53,51 +53,39 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         var item = excluir();
 
         if (item != -1) {
-            var disciplina = new DisciplinaDAOImpl();
-            var delete = disciplina.delete(item);
-
-            if (delete) {
-                showMessageDialog(null, "Disciplina excluída com sucesso.");
-                listar(disciplina, colunas);
-            } else {
-                showMessageDialog(null, "Erro ao excluir a Disciplina.", "Erro", ERROR_MESSAGE);
-            }
+            var disciplinaDAO = new DisciplinaDAOImpl();
+            disciplinaDAO.delete(item);
+            showMessageDialog(null, "Disciplina excluída com sucesso.");
+            listar(disciplinaDAO, colunas);
         }
     }
 
-    @Override
     protected JPanel criarPainel(JTextField string, JTextField string2, JTextField string3, JTextField string4, JButton salvarButton) {
         return null;
     }
 
-    @Override
     protected boolean salvar(JTextField string, JTextField string2, JTextField string3, JTextField string4, JFrame frame) {
         return false;
     }
 
-    @Override
     protected boolean validarCampos(JTextField string, JTextField string2, JTextField string3, JTextField string4) {
         return false;
     }
 
-    @Override
     protected boolean validarCampoObrigatorio(JTextField campo) {
         return false;
     }
 
-    @Override
     protected boolean validarCampoDouble(JTextField campo) {
         return false;
     }
 
-    @Override
     protected Disciplina criar(String string, String string2, String string3, String string4) {
         return null;
     }
 
     @Override
     protected void configurarCamposTabela() {
-        var colunas = new String[]{"ID", "Nome", "Cargo Horária", "Professor", "Limite de Alunos"};
         tabelaPrincipal.setModel(new DefaultTableModel(colunas, 0));
     }
 

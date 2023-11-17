@@ -3,15 +3,17 @@ package controle.matricula.telas.impl;
 import controle.matricula.dao.impl.UsuarioDAOImpl;
 import controle.matricula.model.Usuario;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
+import controle.matricula.util.Operacao;
 import controle.matricula.util.table.TableUsuario;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOImpl> {
@@ -36,12 +38,29 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
 
     @Override
     protected void inserir(ActionEvent evt) {
-
+        var tela = new TelaSecundariaUsuario();
+        tela.telaSecundariaUsuario(null);
     }
 
     @Override
     protected void editar(ActionEvent evt) {
+        var selectedRow = tabelaPrincipal.getSelectedRow();
 
+        if (selectedRow >= 0) {
+            var id = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
+            var usuarioDAO = new UsuarioDAOImpl();
+
+            var usuario = usuarioDAO.findById(id);
+
+            if (usuario != null) {
+                var tela = new TelaSecundariaUsuario(usuario);
+                tela.telaSecundariaUsuario(usuario);
+                listar(usuarioDAO, colunas);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecione um usuário para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
@@ -49,51 +68,95 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         var item = excluir();
 
         if (item != -1) {
-            var usuario = new UsuarioDAOImpl();
-            var delete = usuario.delete(item);
-
-            if (delete) {
-                showMessageDialog(null, "Usuário excluído com sucesso.");
-                listar(usuario, colunas);
-            } else {
-                showMessageDialog(null, "Erro ao excluir o usuário.", "Erro", ERROR_MESSAGE);
-            }
+            var usuarioDAO = new UsuarioDAOImpl();
+            usuarioDAO.delete(item);
+            showMessageDialog(null, "Usuário excluído com sucesso.");
+            listar(usuarioDAO, colunas);
         }
     }
 
-    @Override
-    protected JPanel criarPainel(JTextField string, JTextField string2, JTextField string3, JTextField string4, JButton salvarButton) {
-        return null;
-    }
+    public boolean processarUsuario(int id, JTextField nome, JTextField email, JTextField cargo, JTextField login,
+                                    JTextField senha, Operacao operacao) {
 
-    @Override
-    protected boolean salvar(JTextField string, JTextField string2, JTextField string3, JTextField string4, JFrame frame) {
+        var usuarioDAO = new UsuarioDAOImpl();
+
+        var nomeText = nome.getText();
+        var emailText = email.getText();
+        var cargoText = cargo.getText();
+        var loginText = login.getText();
+        var senhaText = senha.getText();
+
+        var usuario = setUsuario(nomeText, emailText, cargoText, loginText, senhaText);
+
+        if (operacao == Operacao.INSERIR) {
+            if (validarCampos(nome, email, cargo, login, senha)) {
+                usuarioDAO.insert(usuario);
+                return true;
+            } else {
+                showMessageDialog(null, "Por favor, preencha todos os campos corretamente.",
+                        "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        if (operacao == Operacao.ATUALIZAR) {
+            if (validarCampos(nome, email, cargo, null, null)) {
+                usuarioDAO.update(id, usuario);
+                return true;
+            } else {
+                showMessageDialog(null, "Por favor, preencha todos os campos corretamente.",
+                        "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         return false;
     }
 
-    @Override
-    protected boolean validarCampos(JTextField string, JTextField string2, JTextField string3, JTextField string4) {
-        return false;
+    private Usuario setUsuario(String nome, String email, String cargo, String login, String senha) {
+        var usuario = new Usuario();
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+        usuario.setCargo(cargo);
+        usuario.setLogin(login);
+        usuario.setSenha(senha);
+
+        return usuario;
     }
 
-    @Override
-    protected boolean validarCampoObrigatorio(JTextField campo) {
-        return false;
+
+    private boolean validarLoginAndSenha(JTextField login, JTextField senha) {
+        var camposValidos = true;
+
+        camposValidos &= validarCampoObrigatorio(login);
+        camposValidos &= validarCampoObrigatorio(senha);
+
+        return camposValidos;
     }
 
-    @Override
-    protected boolean validarCampoDouble(JTextField campo) {
-        return false;
+    private boolean validarCampos(JTextField nome, JTextField email, JTextField cargo, JTextField login, JTextField senha) {
+        var camposValidos = true;
+
+        camposValidos &= validarCampoObrigatorio(nome);
+        camposValidos &= validarCampoObrigatorio(email);
+        camposValidos &= validarCampoObrigatorio(cargo);
+
+        if (login != null) {
+            camposValidos &= validarLoginAndSenha(login, senha);
+        }
+
+        return camposValidos;
     }
 
-    @Override
-    protected Usuario criar(String string, String string2, String string3, String string4) {
-        return null;
+    private boolean validarCampoObrigatorio(JTextField campo) {
+        var valido = !campo.getText().isEmpty();
+        if (!valido) {
+            campo.setBorder(createLineBorder(Color.RED));
+        } else {
+            campo.setBorder(null);
+        }
+        return valido;
     }
 
     @Override
     protected void configurarCamposTabela() {
-        var colunas = new String[]{"ID", "Nome", "E-mail", "Cargo"};
         tabelaPrincipal.setModel(new DefaultTableModel(colunas, 0));
     }
 

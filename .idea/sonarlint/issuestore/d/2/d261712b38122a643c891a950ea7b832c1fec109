@@ -1,9 +1,21 @@
 
 
-java:S1186*"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(²´†Û8ú±Ú®¼1
+java:S1186*"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(²´†Û8Îêı¨½1
 £
-java:S1186/"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‰Î°³ùÿÿÿÿ8ú±Ú®¼1
-]
-java:S1117d";Rename "colunas" which hides the field declared at line 20.(Ø›‰øÿÿÿÿ8ˆ²Ú®¼1
+java:S1186/"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‰Î°³ùÿÿÿÿ8Ïêı¨½1
+‚
+java:S1172?"`Remove these unused method parameters "string", "string2", "string3", "string4", "salvarButton".(æ³¯Ñüÿÿÿÿ8İêı¨½1
+v
+java:S1172C"YRemove these unused method parameters "string", "string2", "string3", "string4", "frame".(©ºÃÄ8èêı¨½1
+r
+java:S1172G"PRemove these unused method parameters "string", "string2", "string3", "string4".(äœğ©ûÿÿÿÿ8ôêı¨½1
+N
+java:S1172K",Remove this unused method parameter "campo".(ÿ¼»ùÿÿÿÿ8õêı¨½1
+I
+java:S1172O",Remove this unused method parameter "campo".(Èı´ü8öêı¨½1
+m
+java:S1172S"PRemove these unused method parameters "string", "string2", "string3", "string4".(¡¶ûç8ıêı¨½1
 i
-java:S1128"GRemove this unused import 'controle.matricula.dao.impl.UsuarioDAOImpl'.(îŸñÇúÿÿÿÿ8¶¢‰¯¼1
+java:S1128"GRemove this unused import 'controle.matricula.dao.impl.UsuarioDAOImpl'.(îŸñÇúÿÿÿÿ8¢Éÿ¨½1
+_
+java:S1128"BRemove this unused import 'javax.swing.JOptionPane.ERROR_MESSAGE'.(Öäø»8¢Éÿ¨½1

@@ -1,5 +1,6 @@
 package controle.matricula.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface DAO<T> {
@@ -8,9 +9,11 @@ public interface DAO<T> {
 
     T findById(int id);
 
-    boolean insert(T t);
+    void insert(T t) throws SQLException;
 
-    boolean update(T t);
+    void update(int id, T t);
 
     boolean delete(int id);
+
+    T findByNome(String nome);
 }

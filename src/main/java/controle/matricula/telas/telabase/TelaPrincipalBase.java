@@ -216,31 +216,36 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
     }
 
     protected void listar(D dao, String[] colunas) {
-        try {
-            var input = campoPesquisar.getText();
-            List<T> itens = new ArrayList<>();
+        var input = campoPesquisar.getText();
+        List<T> itens = new ArrayList<>();
 
-            if (!input.isEmpty()) {
-                var item = dao.findById(Integer.parseInt(input));
+        if (!input.isEmpty()) {
+            try {
+                int id = Integer.parseInt(input);
+                var item = dao.findById(id);
+
                 if (item != null) {
                     itens.add(item);
                 } else {
                     showMessageDialog(null, "Item não encontrado.", AVISO, WARNING_MESSAGE);
                 }
-            } else {
-                itens = dao.findAll();
+            } catch (NumberFormatException ex) {
+                var nome = dao.findByNome(input);
+                if (nome != null) {
+                    itens.add(nome);
+                } else {
+                    showMessageDialog(null, "Item não encontrado.", AVISO, WARNING_MESSAGE);
+                }
             }
-
-            var newTableModel = criarTableModel(itens);
-            tabelaPrincipal.setModel(newTableModel);
-            range(0, colunas.length)
-                    .forEach(i -> tabelaPrincipal.getColumnModel().getColumn(i).setHeaderValue(colunas[i]));
-            ajustarColunas();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showMessageDialog(null, "Erro ao Pesquisar.", "Erro", ERROR_MESSAGE);
+        } else {
+            itens = dao.findAll();
         }
+
+        var newTableModel = criarTableModel(itens);
+        tabelaPrincipal.setModel(newTableModel);
+        range(0, colunas.length)
+                .forEach(i -> tabelaPrincipal.getColumnModel().getColumn(i).setHeaderValue(colunas[i]));
+        ajustarColunas();
     }
 
     protected abstract TableModel criarTableModel(List<T> itens);
@@ -269,18 +274,6 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
     protected abstract void inserir(ActionEvent evt);
 
     protected abstract void editar(ActionEvent evt);
-
-    protected abstract JPanel criarPainel(JTextField string, JTextField string2, JTextField string3, JTextField string4, JButton salvarButton);
-
-    protected abstract boolean salvar(JTextField string, JTextField string2, JTextField string3, JTextField string4, JFrame frame);
-
-    protected abstract boolean validarCampos(JTextField string, JTextField string2, JTextField string3, JTextField string4);
-
-    protected abstract boolean validarCampoObrigatorio(JTextField campo);
-
-    protected abstract boolean validarCampoDouble(JTextField campo);
-
-    protected abstract T criar(String string, String string2, String string3, String string4);
 
     protected abstract void configurarCamposTabela();
 

@@ -2,12 +2,16 @@ package controle.matricula.dao.impl;
 
 import controle.matricula.dao.DAO;
 import controle.matricula.db.ConexaoDb;
-import controle.matricula.model.Disciplina;
 import controle.matricula.model.Matricula;
+import controle.matricula.util.exceptions.ValidacaoException;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class MatriculaDAOImpl implements DAO<Matricula> {
 
@@ -17,8 +21,10 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
 
     @Override
     public Matricula findById(int id) {
+        var sql = "SELECT * FROM matricula WHERE idMat = ?;";
+
         try (var conn = getConnection();
-             var stmt = conn.prepareStatement("SELECT * FROM matricula WHERE idMat = ?")) {
+             var stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (var rs = stmt.executeQuery()) {
@@ -36,12 +42,14 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         }
     }
 
-
     @Override
     public List<Matricula> findAll() {
+        var sql = "SELECT * FROM matricula;";
+
         List<Matricula> matriculaList = new ArrayList<>();
+
         try (var conn = getConnection();
-             var stmt = conn.prepareStatement("SELECT * FROM matricula");
+             var stmt = conn.prepareStatement(sql);
              var rs = stmt.executeQuery()) {
             while (rs.next()) {
                 var matricula = new Matricula();
@@ -55,45 +63,61 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
     }
 
     @Override
-    public boolean insert(Matricula matricula) {
+    public void insert(Matricula matricula) {
+
+        var sql = "INSERT INTO matricula (disciplina, dataMatricula, valorPago, aluno, periodo) VALUES (?, Now(), ?, ?, ?);";
+
         try (var conn = getConnection();
-             var stmt = conn.prepareStatement(
-                     "INSERT INTO matricula (disciplina, dataMatricula, valorPago, aluno, periodo) VALUES (?, ?, ?, ?, ?)")) {
+             var stmt = conn.prepareStatement(sql)) {
 
-            setStatement(matricula, stmt);
-            stmt.executeUpdate();
+            var idDisciplina = getCodigoDisciplina(matricula.getDisciplina().getNomeDisciplina());
 
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            if (vagasDisponiveis(idDisciplina)) {
+                setStatement(matricula, stmt);
+                stmt.executeUpdate();
+
+                showMessageDialog(null, "Matrícula cadastrada com sucesso.");
+            } else {
+                showMessageDialog(null, "Limite de alunos atingido nessa matrícula. Não é possível matricular.",
+                        "Erro", ERROR_MESSAGE);
+                throw new ValidacaoException("Limite de alunos atingido. Não é possível matricular.");
+            }
+        } catch (SQLException ex) {
+            showMessageDialog(null, "Erro ao cadastar matrícula.", "Erro", JOptionPane.ERROR_MESSAGE);
+            throw new ValidacaoException("Erro ao cadastar matrícula.");
         }
     }
 
 
     @Override
-    public boolean update(Matricula matricula) {
+    public void update(int id, Matricula matricula) {
+        var sql = "UPDATE matricula SET disciplina = ?, valorPago = ?, aluno = ?, periodo = ? WHERE idMat = ?;";
+
+        var disciplinaDAO = new DisciplinaDAOImpl();
+
         try (var conn = getConnection();
-             var stmt = conn.prepareStatement(
-                     "UPDATE matricula SET disciplina = ?, dataMatricula = ?, valorPago = ?, aluno = ?, periodo = ? WHERE idMat = ?")) {
+             var stmt = conn.prepareStatement(sql)) {
+            var idDisciplina = matricula.getDisciplina().getCodigo();
+            var disciplina = disciplinaDAO.findById(idDisciplina);
 
-            setStatement(matricula, stmt);
-            stmt.setInt(6, matricula.getIdMat());
-            stmt.executeUpdate();
+            if (vagasDisponiveis(idDisciplina) || matricula.getDisciplina().getNomeDisciplina().equalsIgnoreCase(disciplina.getNomeDisciplina())) {
+                stmt.setInt(1, matricula.getDisciplina().getCodigo());
+                stmt.setDouble(2, matricula.getValorPago());
+                stmt.setInt(3, matricula.getAluno().getIdPessoa());
+                stmt.setString(4, matricula.getPeriodo());
+                stmt.setInt(5, id);
+                stmt.executeUpdate();
 
-            return true;
+                showMessageDialog(null, "Matrícula atualizada com sucesso.");
+            } else {
+                showMessageDialog(null, "Limite de alunos atingido nessa matrícula. Não é possível matricular.",
+                        "Erro", ERROR_MESSAGE);
+                throw new ValidacaoException("Limite de alunos atingido. Não é possível matricular.");
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            showMessageDialog(null, "Erro ao atualizar a matrícula.", "Erro", JOptionPane.ERROR_MESSAGE);
+            throw new ValidacaoException("Erro ao atualizar a matrícula.");
         }
-    }
-
-    private void setStatement(Matricula matricula, PreparedStatement stmt) throws SQLException {
-        stmt.setObject(1, matricula.getDisciplina().getCodigo());
-        stmt.setDate(2, new Date(matricula.getDataMatricula().getTime()));
-        stmt.setDouble(3, matricula.getValorPago());
-        stmt.setObject(4, matricula.getAluno().getIdPessoa());
-        stmt.setString(5, matricula.getPeriodo());
     }
 
     @Override
@@ -105,10 +129,22 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            showMessageDialog(null, "Erro ao excluir a Matrícula.", "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException("Erro ao excluir a Matrícula.");
         }
 
+    }
+
+    private void setStatement(Matricula matricula, PreparedStatement stmt) throws SQLException {
+        stmt.setObject(1, matricula.getDisciplina().getCodigo());
+        stmt.setDouble(2, matricula.getValorPago());
+        stmt.setObject(3, matricula.getAluno().getIdPessoa());
+        stmt.setString(4, matricula.getPeriodo());
+    }
+
+    @Override
+    public Matricula findByNome(String nome) {
+        return null;
     }
 
 
@@ -127,21 +163,65 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         matricula.setPeriodo(rs.getString("periodo"));
     }
 
-    public Integer contarMatriculas(Disciplina disciplina) {
-        var numeroMatriculas = 0;
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM Matricula WHERE disciplina = ?")) {
+    private boolean vagasDisponiveis(int codigoDisciplina) {
+        var sql = "SELECT COUNT(*) as totalMatriculas FROM matricula WHERE disciplina = ?";
 
-            stmt.setObject(1, disciplina);
-            ResultSet rs = stmt.executeQuery();
+        try (Connection connection = getConnection();
+             var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, codigoDisciplina);
 
-            if (rs.next()) {
-                numeroMatriculas = rs.getInt(1);
+            try (var resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    var totalMatriculas = resultSet.getInt("totalMatriculas");
+
+                    var limiteAlunos = getLimiteAlunos(codigoDisciplina);
+
+                    return totalMatriculas < limiteAlunos;
+                } else {
+                    return false;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
+    }
 
-        return numeroMatriculas;
+    private int getLimiteAlunos(int codigoDisciplina) {
+
+        var sql = "SELECT limiteAlunos FROM disciplina WHERE codigo = ?";
+
+        try (var connection = getConnection();
+             var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, codigoDisciplina);
+
+            try (var resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("limiteAlunos");
+                } else {
+                    throw new SQLException("Limite de alunos não encontrado para a disciplina.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private int getCodigoDisciplina(String nomeDisciplina) throws SQLException {
+        String sql = "SELECT codigo FROM disciplina WHERE nomeDisciplina = ?";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nomeDisciplina);
+
+            try (var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("codigo");
+                } else {
+                    throw new SQLException("Disciplina não encontrada pelo nome: " + nomeDisciplina);
+                }
+            }
+        }
     }
 }

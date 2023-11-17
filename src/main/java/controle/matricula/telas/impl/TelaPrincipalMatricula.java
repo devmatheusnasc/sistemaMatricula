@@ -3,9 +3,12 @@ package controle.matricula.telas.impl;
 import controle.matricula.dao.impl.DisciplinaDAOImpl;
 import controle.matricula.dao.impl.MatriculaDAOImpl;
 import controle.matricula.dao.impl.PessoaDAOImpl;
-import controle.matricula.dao.impl.UsuarioDAOImpl;
+import controle.matricula.model.Disciplina;
 import controle.matricula.model.Matricula;
+import controle.matricula.model.Pessoa;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
+import controle.matricula.util.Operacao;
+import controle.matricula.util.exceptions.ValidacaoException;
 import controle.matricula.util.table.TableMatricula;
 
 import javax.swing.*;
@@ -13,12 +16,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Date;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
 import static javax.swing.BorderFactory.createLineBorder;
-import static javax.swing.JOptionPane.*;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, MatriculaDAOImpl> {
 
@@ -41,84 +44,31 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
 
     }
 
-
-
     @Override
     protected void inserir(ActionEvent evt) {
-//        var frame = new JFrame("Inserir Matrícula");
-//        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-//
-//        var disciplinaField = new JTextField(20);
-//        var valorPagoField = new JTextField(10);
-//        var alunoField = new JTextField(20);
-//        var periodoField = new JTextField(10);
-//
-//        var salvarButton = new JButton("Salvar");
-//        salvarButton.addActionListener(e -> {
-//            if (salvar(disciplinaField, valorPagoField, alunoField, periodoField, frame)) {
-//                listar(evt);
-//            }
-//        });
-//
-//        var panel = criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton);
-//
-//        frame.add(panel);
-//        frame.pack();
-//        frame.setVisible(true);
+        var tela = new TelaSecundariaMatricula();
+        tela.telaSecundariaMatricula(null);
     }
 
     @Override
     protected void editar(ActionEvent evt) {
-//        var selectedRow = tabelaPrincipal.getSelectedRow();
-//
-//        if (selectedRow >= 0) {
-//            var idMatricula = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
-//            var matriculaDAO = new MatriculaDAOImpl();
-//
-//            var matriculaExistente = matriculaDAO.findById(idMatricula);
-//
-//            if (matriculaExistente != null) {
-//                var frame = new JFrame("Editar Matrícula");
-//                frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-//
-//                var disciplinaField = new JTextField(20);
-//                var valorPagoField = new JTextField(10);
-//                var alunoField = new JTextField(20);
-//                var periodoField = new JTextField(10);
-//
-//                var salvarButton = new JButton("Atualizar");
-//                salvarButton.addActionListener(e -> {
-//                    var disciplina = disciplinaField.getText();
-//                    var valorPagoText = valorPagoField.getText();
-//                    var aluno = alunoField.getText();
-//                    var periodo = periodoField.getText();
-//
-//                    if (validarCampos(disciplinaField, valorPagoField, alunoField, periodoField)) {
-//                        var matriculaAtualizada = criar(disciplina, valorPagoText, aluno, periodo);
-//
-//                        matriculaAtualizada.setIdMat(idMatricula);
-//
-//                        var matricula = new MatriculaDAOImpl();
-//                        var atualizado = matricula.update(matriculaAtualizada);
-//
-//                        if (atualizado) {
-//                            JOptionPane.showMessageDialog(null, "Matrícula atualizada com sucesso.");
-//                            frame.dispose();
-//                            listar(evt);
-//                        } else {
-//                            JOptionPane.showMessageDialog(null, "Erro ao atualizar a matrícula.", "Erro", JOptionPane.ERROR_MESSAGE);
-//                        }
-//                    } else {
-//                        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-//                    }
-//                });
-//                frame.add(criarPainel(disciplinaField, valorPagoField, alunoField, periodoField, salvarButton));
-//                frame.pack();
-//                frame.setVisible(true);
-//            }
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Selecione uma matrícula para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
-//        }
+        var selectedRow = tabelaPrincipal.getSelectedRow();
+
+        if (selectedRow >= 0) {
+            var idMatricula = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
+            var matriculaDAO = new MatriculaDAOImpl();
+
+            var matricula = matriculaDAO.findById(idMatricula);
+
+            if (matricula != null) {
+                var tela = new TelaSecundariaMatricula(matricula);
+                tela.telaSecundariaMatricula(matricula);
+                listar(matriculaDAO, colunas);
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecione uma matrícula para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
@@ -127,63 +77,50 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
 
         if (id != -1) {
             var matriculaDAO = new MatriculaDAOImpl();
-            var delete = matriculaDAO.delete(id);
-
-            if (delete) {
-                showMessageDialog(null, "Matrícula excluída com sucesso.");
-                listar(matriculaDAO, colunas);
-            } else {
-                showMessageDialog(null, "Erro ao excluir a Matrícula.", "Erro", ERROR_MESSAGE);
-            }
+            matriculaDAO.delete(id);
+            showMessageDialog(null, "Matrícula excluída com sucesso.");
+            listar(matriculaDAO, colunas);
         }
     }
 
-    @Override
-    protected JPanel criarPainel(JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField, JTextField periodoField, JButton salvarButton) {
-        var panel = new JPanel(new GridLayout(6, 2));
-        panel.add(new JLabel("Disciplina:*"));
-        panel.add(disciplinaField);
-        panel.add(new JLabel("Valor Pago:*"));
-        panel.add(valorPagoField);
-        panel.add(new JLabel("Aluno:*"));
-        panel.add(alunoField);
-        panel.add(new JLabel("Período:*"));
-        panel.add(periodoField);
-        panel.add(salvarButton);
-        return panel;
-    }
+    public boolean processarMatricula(int id, JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField,
+                                      JTextField periodoField, Operacao operacao) {
+        System.out.println(id);
+        var matriculaDAO = new MatriculaDAOImpl();
 
-    @Override
-    protected boolean salvar(JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField, JTextField periodoField, JFrame frame) {
-        var disciplina = disciplinaField.getText();
+        var disciplinaText = disciplinaField.getText();
         var valorPagoText = valorPagoField.getText();
-        var aluno = alunoField.getText();
+        var alunoText = alunoField.getText();
         var periodo = periodoField.getText();
 
-        var camposValidos = validarCampos(disciplinaField, valorPagoField, alunoField, periodoField);
+        if (validarCampos(disciplinaField, valorPagoField, alunoField, periodoField)) {
+            var disciplina = validarDisciplina(disciplinaText);
+            var aluno = validarAluno(alunoText);
+            var matricula = setMatricula(disciplina, valorPagoText, aluno, periodo);
 
-        if (camposValidos) {
-            var matricula = criar(disciplina, valorPagoText, aluno, periodo);
-
-            showMessageDialog(null, "Disciplina excedeu o limite.", "Erro", ERROR_MESSAGE);
-            var matriculaDAO = new MatriculaDAOImpl();
-            var cadastrado = matriculaDAO.insert(matricula);
-
-            if (cadastrado) {
-                showMessageDialog(null, "Matrícula inserida com sucesso.");
-                frame.dispose();
-            } else {
-                showMessageDialog(null, "Erro ao inserir a matrícula.", "Erro", ERROR_MESSAGE);
+            switch (operacao) {
+                case INSERIR -> matriculaDAO.insert(matricula);
+                case ATUALIZAR -> matriculaDAO.update(id, matricula);
+                default -> throw new IllegalArgumentException();
             }
+
             return true;
         } else {
-            showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", ERROR_MESSAGE);
-            return false;
+            showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
         }
+        return false;
     }
 
-    @Override
-    protected boolean validarCampos(JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField, JTextField periodoField) {
+    private Matricula setMatricula(Disciplina disciplina, String valorPagoText, Pessoa aluno, String periodo) {
+        var matricula = new Matricula();
+        matricula.setDisciplina(disciplina);
+        matricula.setValorPago(parseDouble(valorPagoText));
+        matricula.setAluno(aluno);
+        matricula.setPeriodo(periodo);
+        return matricula;
+    }
+
+    private boolean validarCampos(JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField, JTextField periodoField) {
         var camposValidos = true;
 
         camposValidos &= validarCampoObrigatorio(disciplinaField);
@@ -194,8 +131,7 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return camposValidos;
     }
 
-    @Override
-    protected boolean validarCampoObrigatorio(JTextField campo) {
+    private boolean validarCampoObrigatorio(JTextField campo) {
         var valido = !campo.getText().isEmpty();
         if (!valido) {
             campo.setBorder(createLineBorder(Color.RED));
@@ -205,10 +141,9 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return valido;
     }
 
-    @Override
-    protected boolean validarCampoDouble(JTextField campo) {
+    private boolean validarCampoDouble(JTextField campo) {
         try {
-            var valor = parseDouble(campo.getText());
+            parseDouble(campo.getText());
             campo.setBorder(null);
             return true;
         } catch (NumberFormatException ex) {
@@ -217,33 +152,32 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         }
     }
 
-    @Override
-    protected Matricula criar(String disciplina, String valorPagoText, String aluno, String periodo) {
-        var findByDisciplina = new DisciplinaDAOImpl();
-        var disciplinabd = findByDisciplina.findByNome(disciplina);
-        if (disciplinabd == null) {
+    private Disciplina validarDisciplina(String nomeDisciplina) {
+        var disciplinaDAO = new DisciplinaDAOImpl();
+        var disciplina = disciplinaDAO.findByNome(nomeDisciplina);
+
+        if (disciplina != null && disciplina.getNomeDisciplina().equalsIgnoreCase(nomeDisciplina)) {
+            return disciplina;
+        } else {
             showMessageDialog(null, "Disciplina não encontrada.", "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException("Disciplina não encontrada.");
         }
+    }
 
-        var findByAluno = new PessoaDAOImpl();
-        var alunobd = findByAluno.findByNome(aluno);
-        if (alunobd == null) {
+    private Pessoa validarAluno(String aluno) {
+        var pessoaDAO = new PessoaDAOImpl();
+        var pessoa = pessoaDAO.findByNome(aluno);
+
+        if (pessoa != null && pessoa.getTipo().equalsIgnoreCase("aluno")) {
+            return pessoa;
+        } else {
             showMessageDialog(null, "Aluno não encontrado.", "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException("Aluno não encontrado.");
         }
-
-        var matricula = new Matricula();
-        matricula.setDisciplina(disciplinabd);
-        matricula.setValorPago(parseDouble(valorPagoText));
-        matricula.setAluno(alunobd);
-        matricula.setPeriodo(periodo);
-        matricula.setDataMatricula(new Date());
-
-        return matricula;
     }
 
     @Override
     protected void configurarCamposTabela() {
-        var colunas = new String[]{"ID", "Disciplina", "Data da Matricula", "Valor Pago", "Aluno", "Periodo"};
         tabelaPrincipal.setModel(new DefaultTableModel(colunas, 0));
     }
 
