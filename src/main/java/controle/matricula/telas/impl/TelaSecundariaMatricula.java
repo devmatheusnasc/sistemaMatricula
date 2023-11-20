@@ -35,6 +35,7 @@ public class TelaSecundariaMatricula extends JFrame {
         initComponents();
         pack();
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     public TelaSecundariaMatricula(Matricula matricula) {
@@ -45,6 +46,7 @@ public class TelaSecundariaMatricula extends JFrame {
         initComponents();
         pack();
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void initComponents() {
@@ -56,8 +58,6 @@ public class TelaSecundariaMatricula extends JFrame {
         var campoPeriodo = new JLabel();
         var btnCancelar = new JButton();
         var btnConfirmar = new JButton();
-
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         campoDisciplina.setText("Disciplina:");
 
@@ -174,7 +174,6 @@ public class TelaSecundariaMatricula extends JFrame {
     }
 
     public void telaSecundariaMatricula(Matricula matricula) {
-        System.out.println("ID: " + matricula.getIdMat());
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {

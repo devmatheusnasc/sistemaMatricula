@@ -88,25 +88,16 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
 
         var usuario = setUsuario(nomeText, emailText, cargoText, loginText, senhaText);
 
-        if (operacao == Operacao.INSERIR) {
-            if (validarCampos(nome, email, cargo, login, senha)) {
+        if (operacao == Operacao.INSERIR && (validarCampos(nome, email, cargo, login, senha))) {
                 usuarioDAO.insert(usuario);
                 return true;
-            } else {
-                showMessageDialog(null, "Por favor, preencha todos os campos corretamente.",
-                        "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-            }
         }
 
-        if (operacao == Operacao.ATUALIZAR) {
-            if (validarCampos(nome, email, cargo, null, null)) {
+        if (operacao == Operacao.ATUALIZAR && (validarCampos(nome, email, cargo, null, null))) {
                 usuarioDAO.update(id, usuario);
                 return true;
-            } else {
-                showMessageDialog(null, "Por favor, preencha todos os campos corretamente.",
-                        "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-            }
         }
+
         return false;
     }
 

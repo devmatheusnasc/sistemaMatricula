@@ -2,6 +2,10 @@ package controle.matricula.telas.impl;
 
 import javax.swing.*;
 
+import java.awt.*;
+
+import static controle.matricula.telas.impl.TelaDisciplinaCursada.telaDisciplinaCursada;
+import static controle.matricula.telas.impl.TelaDisciplinaMinistrada.telaDisciplinaMinistrada;
 import static controle.matricula.telas.impl.TelaFaturamento.telaFaturamento;
 import static controle.matricula.telas.impl.TelaLogin.encerrarSecao;
 import static controle.matricula.telas.impl.TelaPrincipalDisciplina.telaDisciplina;
@@ -9,97 +13,144 @@ import static controle.matricula.telas.impl.TelaPrincipalMatricula.telaMatricula
 import static controle.matricula.telas.impl.TelaPrincipalPessoa.telaPessoa;
 import static controle.matricula.telas.impl.TelaPrincipalUsuario.telaUsuario;
 import static java.awt.EventQueue.invokeLater;
-import static java.lang.Short.MAX_VALUE;
-import static javax.swing.GroupLayout.*;
-import static javax.swing.GroupLayout.Alignment.LEADING;
-import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
+import static javax.swing.SwingConstants.CENTER;
 
 public class TelaMenu extends JFrame {
 
-    private final JButton btDisciplina = new JButton();
-    private final JButton btEncerrar = new JButton();
-    private final JButton btFaturamento = new JButton();
-    private final JButton btMatricula = new JButton();
-    private final JButton btPessoa = new JButton();
-    private final JButton btTelaUsuario = new JButton();
+    private final JButton btnDisciplina = new JButton();
+    private final JButton btnEncerrarSecao = new JButton();
+    private final JButton btnFaturamento = new JButton();
+    private final JButton btnMatricula = new JButton();
+    private final JButton btnPessoa = new JButton();
+    private final JButton btnUsuario = new JButton();
+    private final JButton btnDisciplinaAluno = new JButton();
+    private final JButton btnDisciplinaProfessor = new JButton();
+    private final JPanel panelBtn = new JPanel();
+    private final JPanel panelImg = new JPanel();
+    private final JLabel menssagem = new JLabel();
     private static TelaMenu telaMenuInstance;
 
 
     public TelaMenu() {
         initComponents();
-    }
-
-    private void initComponents() {
-
+        pack();
+        setLocationRelativeTo(null);
         setTitle("SysControl");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setExtendedState(NORMAL);
         toFront();
+    }
 
-        btEncerrar.setText("Encerrar Seção");
-        btEncerrar.addActionListener(e -> encerrarSecao(this));
+    private void initComponents() {
 
-        btMatricula.setText("matricula");
-        btMatricula.addActionListener(e -> telaMatricula());
+        btnUsuario.setText("Usuario");
+        btnUsuario.addActionListener(e -> telaUsuario());
 
-        btTelaUsuario.setText("Usuario");
-        btTelaUsuario.addActionListener(e -> telaUsuario());
+        btnDisciplinaProfessor.setText("D. por Professor");
+        btnDisciplinaProfessor.addActionListener(e -> telaDisciplinaMinistrada());
 
-        btPessoa.setText("Pessoa");
-        btPessoa.addActionListener(e -> telaPessoa());
+        btnMatricula.setText("Matricula");
+        btnMatricula.addActionListener(e -> telaMatricula());
 
-        btFaturamento.setText("Faturamento");
-        btFaturamento.addActionListener(e -> telaFaturamento());
+        btnFaturamento.setText("Faturamento");
+        btnFaturamento.addActionListener(e -> telaFaturamento());
 
-        btDisciplina.setText("Disciplina");
-        btDisciplina.addActionListener(e -> telaDisciplina());
+        btnDisciplinaAluno.setText("D. por Aluno");
+        btnDisciplinaAluno.addActionListener(e -> telaDisciplinaCursada());
 
-        var layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(layout.createParallelGroup(Alignment.TRAILING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(btMatricula, PREFERRED_SIZE, 111, PREFERRED_SIZE)
-                                                .addPreferredGap(RELATED, DEFAULT_SIZE, MAX_VALUE)
-                                                .addComponent(btDisciplina, PREFERRED_SIZE, 122, PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(btPessoa, PREFERRED_SIZE, 111, PREFERRED_SIZE)
-                                                .addGap(318, 318, 318)
-                                                .addComponent(btTelaUsuario, DEFAULT_SIZE, 114, MAX_VALUE)))
-                                .addGap(34, 34, 34))
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(246, 246, 246)
-                                .addComponent(btFaturamento, PREFERRED_SIZE, 111, PREFERRED_SIZE)
-                                .addContainerGap(DEFAULT_SIZE, MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btEncerrar)
+        btnPessoa.setText("Pessoa");
+        btnPessoa.addActionListener(e -> telaPessoa());
+
+        btnDisciplina.setText("Disciplina");
+        btnDisciplina.addActionListener(e -> telaDisciplina());
+
+        btnEncerrarSecao.setText("Encerrar Seção");
+        btnEncerrarSecao.addActionListener(e -> encerrarSecao(this));
+
+        menssagem.setText("SysControl");
+        menssagem.setHorizontalAlignment(CENTER);
+        menssagem.setFont(new Font("Arial", Font.BOLD, 25));
+
+        javax.swing.GroupLayout panelBtnLayout = new javax.swing.GroupLayout(panelBtn);
+        panelBtn.setLayout(panelBtnLayout);
+        panelBtnLayout.setHorizontalGroup(
+                panelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelBtnLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnDisciplinaProfessor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(btnDisciplinaAluno, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnFaturamento, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                                        .addComponent(btnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnPessoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnDisciplina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnMatricula, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(118, Short.MAX_VALUE))
+        );
+        panelBtnLayout.setVerticalGroup(
+                panelBtnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelBtnLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPessoa, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnFaturamento, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDisciplinaAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDisciplinaProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(16, 16, 16))
+        );
+
+
+        javax.swing.GroupLayout panelImgLayout = new javax.swing.GroupLayout(panelImg);
+        panelImg.setLayout(panelImgLayout);
+        panelImgLayout.setHorizontalGroup(
+                panelImgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelImgLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panelImgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(panelImgLayout.createSequentialGroup()
+                                                .addGap(0, 269, Short.MAX_VALUE)
+                                                .addComponent(btnEncerrarSecao))
+                                        .addComponent(menssagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                                        .addComponent(btMatricula, PREFERRED_SIZE, 89, PREFERRED_SIZE)
-                                        .addComponent(btDisciplina, PREFERRED_SIZE, 89, PREFERRED_SIZE))
-                                .addPreferredGap(RELATED, 50, MAX_VALUE)
-                                .addComponent(btFaturamento, PREFERRED_SIZE, 91, PREFERRED_SIZE)
-                                .addGap(44, 44, 44)
-                                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                                        .addComponent(btPessoa, PREFERRED_SIZE, 84, PREFERRED_SIZE)
-                                        .addComponent(btTelaUsuario, PREFERRED_SIZE, 89, PREFERRED_SIZE))
-                                .addGap(49, 49, 49)
-                                .addComponent(btEncerrar)
-                                .addGap(0, 0, Short.MAX_VALUE))
+        panelImgLayout.setVerticalGroup(
+                panelImgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelImgLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(menssagem, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(148, 148, 148)
+                                .addComponent(btnEncerrarSecao)
+                                .addContainerGap())
         );
-        pack();
-        setLocationRelativeTo(null);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(panelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panelImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(82, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(panelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())
+                        .addComponent(panelImg, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
     }
+
 
     public static void telaMenu(JFrame telaAtual) {
         if (telaAtual != null) {

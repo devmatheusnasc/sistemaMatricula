@@ -3,14 +3,17 @@ package controle.matricula.telas.impl;
 import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Pessoa;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
+import controle.matricula.util.Operacao;
 import controle.matricula.util.table.TablePessoa;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl> {
@@ -38,13 +41,28 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
 
     @Override
     protected void inserir(ActionEvent evt) {
-
+        var telaSecundaria = new TelaSecundariaPessoa();
+        telaSecundaria.telaSecundariaPessoa(null);
     }
 
     @Override
     protected void editar(ActionEvent evt) {
-        TelaEditarPessoa ok = new TelaEditarPessoa();
-        ok.editarTela();
+        var selectedRow = tabelaPrincipal.getSelectedRow();
+
+        if (selectedRow >= 0) {
+            var id = (int) tabelaPrincipal.getValueAt(selectedRow, 0);
+            var pessoaDAO = new PessoaDAOImpl();
+            var pessoa = pessoaDAO.findById(id);
+
+            if (pessoa != null) {
+                var tela = new TelaSecundariaPessoa(pessoa);
+                tela.telaSecundariaPessoa(pessoa);
+                listar(pessoaDAO, colunas);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecione uma pessoa para editar.", AVISO, JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
@@ -59,28 +77,70 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         }
     }
 
-    protected JPanel criarPainel(JTextField string, JTextField string2, JTextField string3, JTextField string4, JButton salvarButton) {
-        return null;
-    }
+    public boolean processarUsuario(int id, JTextField nome, JTextField endereco, JComboBox uf, JTextField cpf,
+                                    JTextField telefone, JTextField email, JComboBox tipo,  Operacao operacao) {
 
-    protected boolean salvar(JTextField string, JTextField string2, JTextField string3, JTextField string4, JFrame frame) {
+        var pessoaDao = new PessoaDAOImpl();
+
+        var nomeText = nome.getText();
+        var enderecoText = endereco.getText();
+        var ufText = (String) uf.getSelectedItem();
+        var cpfText = cpf.getText();
+        var telefoneText = telefone.getText();
+        var emailText = email.getText();
+        var tipoText = (String) tipo.getSelectedItem();
+
+        var pessoa = setPessoa(nomeText, enderecoText, ufText, cpfText, telefoneText, emailText, tipoText);
+
+        if (operacao == Operacao.INSERIR && (validarCampos(nome, endereco, cpf, telefone, email))) {
+                pessoaDao.insert(pessoa);
+                return true;
+        }
+
+        if (operacao == Operacao.ATUALIZAR && (validarCampos(nome, endereco, null , telefone, email))) {
+                pessoaDao.update(id, pessoa);
+                return true;
+        }
+
         return false;
     }
 
-    protected boolean validarCampos(JTextField string, JTextField string2, JTextField string3, JTextField string4) {
-        return false;
+    private Pessoa setPessoa(String nome, String endereco, String uf, String cpf, String telefone, String email, String tipo) {
+        var pessoa = new Pessoa();
+
+        pessoa.setNomePessoa(nome);
+        pessoa.setEndereco(endereco);
+        pessoa.setUf(uf);
+        pessoa.setCpf(cpf);
+        pessoa.setTelefone(telefone);
+        pessoa.setEmail(email);
+        pessoa.setTipo(tipo);
+
+        return pessoa;
     }
 
-    protected boolean validarCampoObrigatorio(JTextField campo) {
-        return false;
+    private boolean validarCampos(JTextField nome, JTextField endereco, JTextField cpf, JTextField telefone, JTextField email) {
+        var camposValidos = true;
+
+        camposValidos &= validarCampoObrigatorio(nome);
+        camposValidos &= validarCampoObrigatorio(endereco);
+        camposValidos &= validarCampoObrigatorio(telefone);
+        camposValidos &= validarCampoObrigatorio(email);
+
+        if (cpf != null) {
+            camposValidos &= validarCampoObrigatorio(cpf);
+        }
+        return camposValidos;
     }
 
-    protected boolean validarCampoDouble(JTextField campo) {
-        return false;
-    }
-
-    protected Pessoa criar(String string, String string2, String string3, String string4) {
-        return null;
+    private boolean validarCampoObrigatorio(JTextField campo) {
+        var valido = !campo.getText().isEmpty();
+        if (!valido) {
+            campo.setBorder(createLineBorder(Color.RED));
+        } else {
+            campo.setBorder(null);
+        }
+        return valido;
     }
 
     @Override

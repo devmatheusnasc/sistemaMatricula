@@ -27,7 +27,7 @@ public class TelaSecundariaUsuario extends JFrame {
     private JTextField textEmail;
     private JTextField textCargo;
     private JTextField textLogin;
-    private JTextField textSenha;
+    private JPasswordField textSenha;
 
     private final JPanel panel = new JPanel();
     private final JLabel campoNome = new JLabel();
@@ -272,7 +272,7 @@ public class TelaSecundariaUsuario extends JFrame {
         textEmail = new JTextField();
         textCargo = new JTextField();
         textLogin = new JTextField();
-        textSenha = new JTextField();
+        textSenha = new JPasswordField();
     }
 
     public void telaSecundariaUsuario(Usuario usuario) {

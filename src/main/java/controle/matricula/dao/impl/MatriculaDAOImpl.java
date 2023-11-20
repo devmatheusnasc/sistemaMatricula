@@ -6,7 +6,10 @@ import controle.matricula.model.Matricula;
 import controle.matricula.util.exceptions.ValidacaoException;
 
 import javax.swing.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +136,50 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
             throw new ValidacaoException("Erro ao excluir a Matrícula.");
         }
 
+    }
+
+    public double findValorPagoByNomeDisciplina(int id) {
+        var sql = "SELECT SUM(valorPago) AS somaValorPago FROM matricula WHERE disciplina = ?;";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("somaValorPago");
+                } else {
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<String> findDisciplinaByAluno(int idAluno) {
+        var sql = "SELECT DISTINCT disciplina FROM matricula WHERE aluno = ?;";
+
+        List<String> nomesDisciplinas = new ArrayList<>();
+        var disciplinaDAO = new DisciplinaDAOImpl();
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idAluno);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idDisciplina = rs.getInt("disciplina");
+                    var disciplina = disciplinaDAO.findById(idDisciplina);
+                    nomesDisciplinas.add(disciplina.getNomeDisciplina());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nomesDisciplinas;
     }
 
     private void setStatement(Matricula matricula, PreparedStatement stmt) throws SQLException {

@@ -101,13 +101,33 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
             stmt.setInt(4, disciplina.getLimiteAlunos());
             stmt.executeUpdate();
 
+            showMessageDialog(null, "Disciplina cadastrada com sucesso.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            showMessageDialog(null, "Erro ao cadastrar disciplina.", "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException("Erro ao cadastrar pessoa.");
         }
     }
 
     @Override
     public void update(int id, Disciplina disciplina) {
+        var sql = "UPDATE disciplina SET nomeDisciplina = ?, cargaHoraria = ?, professor = ?, limiteAlunos = ? WHERE codigo = ?;";
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, disciplina.getNomeDisciplina());
+            stmt.setInt(2, disciplina.getCargaHoraria());
+            stmt.setInt(3, disciplina.getProfessor().getIdPessoa());
+            stmt.setInt(4, disciplina.getLimiteAlunos());
+            stmt.setInt(5, id);
+
+            stmt.executeUpdate();
+
+            showMessageDialog(null, "disciplina atualizada com sucesso.");
+        } catch (SQLException e) {
+            showMessageDialog(null, "Erro ao atualizar disciplina.", "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException("Erro ao atualizar disciplina.");
+        }
     }
 
     @Override
@@ -125,6 +145,48 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
                     "Erro", ERROR_MESSAGE);
             throw new ValidacaoException("Existem matriculas vinculadas a essa disciplina.");
         }
+    }
+
+    public List<Disciplina> findAllByNome() {
+        var sql = "SELECT nomeDisciplina FROM disciplina;";
+
+        List<Disciplina> disciplinas = new ArrayList<>();
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql);
+             var rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                var disciplina = new Disciplina();
+                disciplina.setNomeDisciplina(rs.getString("nomeDisciplina"));
+                disciplinas.add(disciplina);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return disciplinas;
+    }
+
+    public List<String> findDisciplinaByProfessor(int idProfessor) {
+        var sql = "SELECT DISTINCT nomeDisciplina FROM disciplina WHERE professor = ?;";
+
+        List<String> nomesDisciplinas = new ArrayList<>();
+        var disciplinaDAO = new DisciplinaDAOImpl();
+
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idProfessor);
+
+            try (var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    var disciplina = rs.getString("nomeDisciplina");
+                    nomesDisciplinas.add(disciplina);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nomesDisciplinas;
     }
 
     private void disciplinaResult(ResultSet rs, Disciplina disciplina) throws SQLException {

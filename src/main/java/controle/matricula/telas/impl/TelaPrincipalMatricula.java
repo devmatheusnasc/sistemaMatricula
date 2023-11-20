@@ -85,7 +85,7 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
 
     public boolean processarMatricula(int id, JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField,
                                       JTextField periodoField, Operacao operacao) {
-        System.out.println(id);
+
         var matriculaDAO = new MatriculaDAOImpl();
 
         var disciplinaText = disciplinaField.getText();
@@ -105,9 +105,8 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
             }
 
             return true;
-        } else {
-            showMessageDialog(null, "Por favor, preencha todos os campos corretamente.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
         }
+
         return false;
     }
 
