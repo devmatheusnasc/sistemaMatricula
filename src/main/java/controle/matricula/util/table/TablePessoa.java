@@ -54,16 +54,25 @@ public class TablePessoa extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var data = dados.get(rowIndex);
-        return switch (columnIndex) {
-            case 0 -> data.getIdPessoa();
-            case 1 -> data.getNomePessoa();
-            case 2 -> data.getEndereco();
-            case 3 -> data.getUf();
-            case 4 -> data.getTelefone();
-            case 5 -> data.getCpf();
-            case 6 -> data.getEmail();
-            case 7 -> data.getTipo();
-            default -> null;
-        };
+        switch (columnIndex) {
+            case 0:
+                return data.getIdPessoa();
+            case 1:
+                return data.getNomePessoa();
+            case 2:
+                return data.getEndereco();
+            case 3:
+                return data.getUf();
+            case 4:
+                return data.getTelefone();
+            case 5:
+                return data.getCpf();
+            case 6:
+                return data.getEmail();
+            case 7:
+                return data.getTipo();
+            default:
+                return null;
+        }
     }
 }

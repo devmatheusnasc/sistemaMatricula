@@ -114,9 +114,14 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
             var matricula = setMatricula(disciplinaText, valorPagoText, alunoText, periodo);
 
             switch (operacao) {
-                case INSERIR -> matriculaDAO.insert(matricula);
-                case ATUALIZAR -> matriculaDAO.update(id, matricula);
-                default -> throw new IllegalArgumentException();
+                case INSERIR:
+                    matriculaDAO.insert(matricula);
+                    break;
+                case ATUALIZAR:
+                    matriculaDAO.update(id, matricula);
+                    break;
+                default:
+                    throw new IllegalArgumentException();
             }
 
             return true;

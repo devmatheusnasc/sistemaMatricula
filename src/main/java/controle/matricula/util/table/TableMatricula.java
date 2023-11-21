@@ -54,14 +54,21 @@ public class TableMatricula extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var data = dados.get(rowIndex);
-        return switch (columnIndex) {
-            case 0 -> data.getIdMat();
-            case 1 -> data.getDisciplina().getNomeDisciplina();
-            case 2 -> data.getDataMatricula();
-            case 3 -> data.getValorPago();
-            case 4 -> data.getAluno().getNomePessoa();
-            case 5 -> data.getPeriodo();
-            default -> null;
-        };
+        switch (columnIndex) {
+            case 0:
+                return data.getIdMat();
+            case 1:
+                return data.getDisciplina().getNomeDisciplina();
+            case 2:
+                return data.getDataMatricula();
+            case 3:
+                return data.getValorPago();
+            case 4:
+                return data.getAluno().getNomePessoa();
+            case 5:
+                return data.getPeriodo();
+            default:
+                return null;
+        }
     }
 }

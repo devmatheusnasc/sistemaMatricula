@@ -54,12 +54,17 @@ public class TableUsuario extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         var data = dados.get(rowIndex);
-        return switch (columnIndex) {
-            case 0 -> data.getId();
-            case 1 -> data.getNome();
-            case 2 -> data.getEmail();
-            case 3 -> data.getCargo();
-            default -> null;
-        };
+        switch (columnIndex) {
+            case 0:
+                return data.getId();
+            case 1:
+                return data.getNome();
+            case 2:
+                return data.getEmail();
+            case 3:
+                return data.getCargo();
+            default:
+                return null;
+        }
     }
 }
