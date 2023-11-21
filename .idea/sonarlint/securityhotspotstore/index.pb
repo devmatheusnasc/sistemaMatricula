@@ -78,3 +78,7 @@ v
 Fsrc/main/java/controle/matricula/telas/impl/TelaDisciplinaCursada.java,1/6/16b453e9b6e3c2a73c0b3b53ab01d0e0f9046cf1
 y
 Isrc/main/java/controle/matricula/telas/impl/TelaDisciplinaMinistrada.java,0/8/08d8a9bee563c675730870346ea6fe72a8bdc3ab
+K
+docs/jquery/jquery-3.5.1.js,2/c/2c97aa15132ab9c7bdcded273721e3a010b561e1
+T
+$docs/controle/matricula/dao/DAO.html,3/8/380ba402849d88cec74ebbbefc110283b50f19d9
