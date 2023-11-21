@@ -16,8 +16,17 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Implementação do DAO para a entidade Pessoa.
+ */
 public class PessoaDAOImpl implements DAO<Pessoa> {
 
+    /**
+     * Obtém uma conexão com o banco de dados.
+     *
+     * @return Conexão com o banco de dados.
+     * @throws SQLException Exceção lançada em caso de erro na conexão.
+     */
     private Connection getConnection() throws SQLException {
         return ConexaoDb.getConnection();
     }
@@ -35,7 +44,12 @@ public class PessoaDAOImpl implements DAO<Pessoa> {
         }
     }
 
-
+    /**
+     * Busca uma pessoa pelo nome.
+     *
+     * @param nome Nome da pessoa a ser buscada.
+     * @return Objeto Pessoa correspondente ao nome fornecido.
+     */
     public Pessoa findByNome(String nome) {
         var sql = "SELECT * FROM pessoa WHERE nomePessoa LIKE ?;";
 
@@ -127,7 +141,7 @@ public class PessoaDAOImpl implements DAO<Pessoa> {
         var sql = "DELETE FROM pessoa WHERE idPessoa = ?;";
         var pessoaDAO = new PessoaDAOImpl();
         var pessoa = pessoaDAO.findById(id);
-        var messagemErro = "";
+        var mensagemErro = "";
 
         try (var conn = getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -136,16 +150,23 @@ public class PessoaDAOImpl implements DAO<Pessoa> {
             return true;
         } catch (SQLException e) {
             if (pessoa.getTipo().equalsIgnoreCase("Professor")) {
-                messagemErro = "Existem disciplinas vinculadas a este professor";
+                mensagemErro = "Existem disciplinas vinculadas a este professor";
             } else {
-                messagemErro = "Existem matrículas vinculadas a este aluno.";
+                mensagemErro = "Existem matrículas vinculadas a este aluno.";
             }
-            showMessageDialog(null, messagemErro, "Erro", ERROR_MESSAGE);
-            throw new ValidacaoException(messagemErro);
+            showMessageDialog(null, mensagemErro, "Erro", ERROR_MESSAGE);
+            throw new ValidacaoException(mensagemErro);
         }
     }
 
-
+    /**
+     * Obtém uma pessoa com base no ID e no PreparedStatement fornecido.
+     *
+     * @param id   ID da pessoa.
+     * @param stmt PreparedStatement.
+     * @return Objeto Pessoa correspondente ao ID fornecido.
+     * @throws SQLException Exceção lançada em caso de erro no acesso ao banco de dados.
+     */
     private Pessoa getPessoa(int id, PreparedStatement stmt) throws SQLException {
         stmt.setInt(1, id);
 
@@ -160,6 +181,12 @@ public class PessoaDAOImpl implements DAO<Pessoa> {
         }
     }
 
+    /**
+     * Busca uma pessoa pelo nome completo.
+     *
+     * @param nome Nome da pessoa a ser buscada.
+     * @return Objeto Pessoa correspondente ao nome fornecido.
+     */
     public Pessoa findByNomePessoa(String nome) {
         var sql = "SELECT * FROM pessoa WHERE nomePessoa = ?;";
 
@@ -183,6 +210,13 @@ public class PessoaDAOImpl implements DAO<Pessoa> {
         }
     }
 
+    /**
+     * Extrai os resultados do ResultSet e popula um objeto Pessoa.
+     *
+     * @param rs     ResultSet contendo os resultados da consulta.
+     * @param pessoa Objeto Pessoa a ser populado.
+     * @throws SQLException Exceção lançada em caso de erro no acesso ao banco de dados.
+     */
     private void pessoaResult(ResultSet rs, Pessoa pessoa) throws SQLException {
         pessoa.setIdPessoa(rs.getInt("idPessoa"));
         pessoa.setNomePessoa(rs.getString("nomePessoa"));

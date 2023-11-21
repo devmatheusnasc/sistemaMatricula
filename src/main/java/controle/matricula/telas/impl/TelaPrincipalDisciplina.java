@@ -79,28 +79,27 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         }
     }
 
-    public boolean processarUsuario(int id, JTextField nomeDisciplina, JTextField cargaHoraria, JTextField professor,
+    public boolean processarUsuario(int id, JTextField nomeDisciplina, JTextField cargaHoraria, JComboBox professor,
                                     JTextField limiteAlunos, Operacao operacao) {
 
         var disciplinaDAO = new DisciplinaDAOImpl();
 
         var nomeDisciplinaText = nomeDisciplina.getText();
         var cargaHorariaText = cargaHoraria.getText();
-        var professorText = professor.getText();
+        var professorText = (Pessoa) professor.getSelectedItem();
         var limiteAlunosText = limiteAlunos.getText();
-        if (validarCampos(nomeDisciplina, cargaHoraria, professor, limiteAlunos)) {
+        if (validarCampos(nomeDisciplina, cargaHoraria, limiteAlunos)) {
 
-            var professorValido = validarProfessor(professorText);
 
-            var pessoa = setDisciplina(nomeDisciplinaText, cargaHorariaText, professorValido, limiteAlunosText);
+            var disciplina = setDisciplina(nomeDisciplinaText, cargaHorariaText, professorText, limiteAlunosText);
 
             if (operacao == Operacao.INSERIR) {
-                disciplinaDAO.insert(pessoa);
+                disciplinaDAO.insert(disciplina);
                 return true;
             }
 
             if (operacao == Operacao.ATUALIZAR) {
-                disciplinaDAO.update(id, pessoa);
+                disciplinaDAO.update(id, disciplina);
                 return true;
             }
         }
@@ -118,24 +117,11 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         return disciplina;
     }
 
-    private Pessoa validarProfessor(String professor) {
-        var pessoaDAO = new PessoaDAOImpl();
-        var pessoa = pessoaDAO.findByNome(professor);
-
-        if (pessoa != null && pessoa.getTipo().equalsIgnoreCase("Professor")) {
-            return pessoa;
-        } else {
-            showMessageDialog(null, "Professor não encontrado.", "Erro", ERROR_MESSAGE);
-            throw new ValidacaoException("Professor não encontrado.");
-        }
-    }
-
-    private boolean validarCampos(JTextField nomeDisciplina, JTextField cargaHoraria, JTextField professor, JTextField limiteAlunos) {
+    private boolean validarCampos(JTextField nomeDisciplina, JTextField cargaHoraria, JTextField limiteAlunos) {
         var camposValidos = true;
 
         camposValidos &= validarCampoObrigatorio(nomeDisciplina);
         camposValidos &= validarCampoObrigatorio(cargaHoraria);
-        camposValidos &= validarCampoObrigatorio(professor);
         camposValidos &= validarCampoObrigatorio(limiteAlunos);
 
         return camposValidos;

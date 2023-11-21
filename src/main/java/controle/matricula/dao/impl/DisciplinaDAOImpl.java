@@ -14,8 +14,17 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Implementação do DAO para a entidade Disciplina.
+ */
 public class DisciplinaDAOImpl implements DAO<Disciplina> {
 
+    /**
+     * Obtém uma conexão com o banco de dados.
+     *
+     * @return Conexão com o banco de dados.
+     * @throws SQLException Exceção lançada em caso de erro na conexão.
+     */
     private Connection getConnection() throws SQLException {
         return ConexaoDb.getConnection();
     }
@@ -66,7 +75,6 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
             return null;
         }
     }
-
 
     @Override
     public List<Disciplina> findAll() {
@@ -147,6 +155,11 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
         }
     }
 
+    /**
+     * Retorna uma lista contendo apenas os nomes das disciplinas.
+     *
+     * @return Lista de nomes de disciplinas.
+     */
     public List<Disciplina> findAllByNome() {
         var sql = "SELECT nomeDisciplina FROM disciplina;";
 
@@ -166,6 +179,12 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
         return disciplinas;
     }
 
+    /**
+     * Retorna uma lista de nomes de disciplinas associadas a um professor.
+     *
+     * @param idProfessor ID do professor.
+     * @return Lista de nomes de disciplinas associadas ao professor.
+     */
     public List<String> findDisciplinaByProfessor(int idProfessor) {
         var sql = "SELECT DISTINCT nomeDisciplina FROM disciplina WHERE professor = ?;";
 
@@ -189,6 +208,13 @@ public class DisciplinaDAOImpl implements DAO<Disciplina> {
         return nomesDisciplinas;
     }
 
+    /**
+     * Preenche os dados de uma disciplina com base no ResultSet.
+     *
+     * @param rs         ResultSet contendo os dados da disciplina.
+     * @param disciplina Disciplina a ser preenchida.
+     * @throws SQLException Exceção lançada em caso de erro no ResultSet.
+     */
     private void disciplinaResult(ResultSet rs, Disciplina disciplina) throws SQLException {
         var pessoaDAO = new PessoaDAOImpl();
         var professor = pessoaDAO.findById(rs.getInt("professor"));

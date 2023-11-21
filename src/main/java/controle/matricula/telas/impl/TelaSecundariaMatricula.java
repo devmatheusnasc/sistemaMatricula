@@ -1,6 +1,10 @@
 package controle.matricula.telas.impl;
 
+import controle.matricula.dao.impl.DisciplinaDAOImpl;
+import controle.matricula.dao.impl.PessoaDAOImpl;
+import controle.matricula.model.Disciplina;
 import controle.matricula.model.Matricula;
+import controle.matricula.model.Pessoa;
 import controle.matricula.util.Operacao;
 
 import javax.swing.*;
@@ -22,9 +26,9 @@ import static javax.swing.UIManager.setLookAndFeel;
 
 public class TelaSecundariaMatricula extends JFrame {
 
-    private JTextField textDisciplina;
+    private JComboBox<Disciplina> textDisciplina;
     private JTextField textValorPago;
-    private JTextField textAluno;
+    private JComboBox<Pessoa> textAluno;
     private JTextField textPeriodo;
     private Operacao operacao;
     private int id;
@@ -32,6 +36,8 @@ public class TelaSecundariaMatricula extends JFrame {
     public TelaSecundariaMatricula() {
         operacao = Operacao.INSERIR;
         inicializarCampos();
+        alunoSetComboBox();
+        disciplinaSetComboBox();
         initComponents();
         pack();
         setLocationRelativeTo(null);
@@ -42,6 +48,8 @@ public class TelaSecundariaMatricula extends JFrame {
         operacao = Operacao.ATUALIZAR;
         id = matricula.getIdMat();
         inicializarCampos();
+        alunoSetComboBox();
+        disciplinaSetComboBox();
         preencherCampo(matricula);
         initComponents();
         pack();
@@ -160,17 +168,37 @@ public class TelaSecundariaMatricula extends JFrame {
     }
 
     private void preencherCampo(Matricula matricula) {
-        textDisciplina.setText(matricula.getDisciplina().getNomeDisciplina());
         textValorPago.setText(String.valueOf(matricula.getValorPago()));
-        textAluno.setText(matricula.getAluno().getNomePessoa());
         textPeriodo.setText(matricula.getPeriodo());
     }
 
     private void inicializarCampos() {
-        textDisciplina = new JTextField();
+        textDisciplina = new JComboBox();
         textValorPago = new JTextField();
-        textAluno = new JTextField();
+        textAluno = new JComboBox();
         textPeriodo = new JTextField();
+    }
+
+    private void alunoSetComboBox() {
+        var pessoaDAO = new PessoaDAOImpl();
+        var aluno = pessoaDAO.findAll();
+
+        var alunoList = aluno.stream()
+                .filter(pessoa -> pessoa.getTipo().equals("Aluno"))
+                .toList();
+
+        var pessoaComboBoxModel = new DefaultComboBoxModel<>(alunoList.toArray(new Pessoa[0]));
+
+        textAluno.setModel(pessoaComboBoxModel);
+    }
+
+    private void disciplinaSetComboBox() {
+        var disciplinaDAO = new DisciplinaDAOImpl();
+        var disciplina = disciplinaDAO.findAll();
+
+        var disciplinaComboBoxModel = new DefaultComboBoxModel<>(disciplina.toArray(new Disciplina[0]));
+
+        textDisciplina.setModel(disciplinaComboBoxModel);
     }
 
     public void telaSecundariaMatricula(Matricula matricula) {

@@ -83,20 +83,18 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         }
     }
 
-    public boolean processarMatricula(int id, JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField,
+    public boolean processarMatricula(int id, JComboBox disciplinaField, JTextField valorPagoField, JComboBox alunoField,
                                       JTextField periodoField, Operacao operacao) {
 
         var matriculaDAO = new MatriculaDAOImpl();
 
-        var disciplinaText = disciplinaField.getText();
+        var disciplinaText = (Disciplina) disciplinaField.getSelectedItem();
         var valorPagoText = valorPagoField.getText();
-        var alunoText = alunoField.getText();
+        var alunoText = (Pessoa) alunoField.getSelectedItem();
         var periodo = periodoField.getText();
 
-        if (validarCampos(disciplinaField, valorPagoField, alunoField, periodoField)) {
-            var disciplina = validarDisciplina(disciplinaText);
-            var aluno = validarAluno(alunoText);
-            var matricula = setMatricula(disciplina, valorPagoText, aluno, periodo);
+        if (validarCampos(valorPagoField, periodoField)) {
+            var matricula = setMatricula(disciplinaText, valorPagoText, alunoText, periodo);
 
             switch (operacao) {
                 case INSERIR -> matriculaDAO.insert(matricula);
@@ -119,11 +117,9 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return matricula;
     }
 
-    private boolean validarCampos(JTextField disciplinaField, JTextField valorPagoField, JTextField alunoField, JTextField periodoField) {
+    private boolean validarCampos(JTextField valorPagoField, JTextField periodoField) {
         var camposValidos = true;
 
-        camposValidos &= validarCampoObrigatorio(disciplinaField);
-        camposValidos &= validarCampoObrigatorio(alunoField);
         camposValidos &= validarCampoObrigatorio(periodoField);
         camposValidos &= validarCampoDouble(valorPagoField);
 
@@ -160,18 +156,6 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         } else {
             showMessageDialog(null, "Disciplina não encontrada.", "Erro", ERROR_MESSAGE);
             throw new ValidacaoException("Disciplina não encontrada.");
-        }
-    }
-
-    private Pessoa validarAluno(String aluno) {
-        var pessoaDAO = new PessoaDAOImpl();
-        var pessoa = pessoaDAO.findByNome(aluno);
-
-        if (pessoa != null && pessoa.getTipo().equalsIgnoreCase("aluno")) {
-            return pessoa;
-        } else {
-            showMessageDialog(null, "Aluno não encontrado.", "Erro", ERROR_MESSAGE);
-            throw new ValidacaoException("Aluno não encontrado.");
         }
     }
 

@@ -1,12 +1,15 @@
 package controle.matricula.telas.impl;
 
+import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Disciplina;
+import controle.matricula.model.Pessoa;
 import controle.matricula.util.Operacao;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import static controle.matricula.util.Operacao.ATUALIZAR;
 import static controle.matricula.util.Operacao.INSERIR;
@@ -32,7 +35,7 @@ public class TelaSecundariaDisciplina extends JFrame {
     private JLabel campoLimiteAlunos = new JLabel();
     private JTextField textNomeDisciplina = new JTextField();
     private JTextField textCargaHoraria = new JTextField();
-    private JTextField textProfessor = new JTextField();
+    private JComboBox<Pessoa> textProfessor;
     private JTextField textLimiteAlunos = new JTextField();
     private JButton btnCancelar = new JButton();
     private JButton btnConfirmar = new JButton();
@@ -43,6 +46,7 @@ public class TelaSecundariaDisciplina extends JFrame {
         operacao = INSERIR;
 
         inicializarCampos();
+        professorSetComboBox();
         initComponents();
         pack();
         setLocationRelativeTo(null);
@@ -54,6 +58,7 @@ public class TelaSecundariaDisciplina extends JFrame {
         id = disciplina.getCodigo();
 
         inicializarCampos();
+        professorSetComboBox(disciplina);
         preencherCampo(disciplina);
         initComponents();
         pack();
@@ -156,15 +161,49 @@ public class TelaSecundariaDisciplina extends JFrame {
     private void preencherCampo(Disciplina disciplina) {
         textNomeDisciplina.setText(disciplina.getNomeDisciplina());
         textCargaHoraria.setText(String.valueOf(disciplina.getCargaHoraria()));
-        textProfessor.setText(disciplina.getProfessor().getNomePessoa());
         textLimiteAlunos.setText(String.valueOf(disciplina.getLimiteAlunos()));
     }
 
     private void inicializarCampos() {
         textNomeDisciplina = new JTextField();
         textCargaHoraria = new JTextField();
-        textProfessor = new JTextField();
+        textProfessor = new JComboBox<>();
         textLimiteAlunos = new JTextField();
+    }
+
+    private void professorSetComboBox(Disciplina disciplina) {
+        var professorAtual = disciplina.getProfessor().getNomePessoa();
+
+        var pessoaDAO = new PessoaDAOImpl();
+        var professor = pessoaDAO.findAll();
+
+        var professorList = professor.stream()
+                .filter(pes -> pes.getTipo().equals("Professor"))
+                .filter(pes -> !pes.getNomePessoa().equals(professorAtual))
+                .toList();
+
+        var lista = new ArrayList<Pessoa>();
+
+        lista.add(new Pessoa(0, professorAtual, "", "", "", "", "", "Professor"));
+
+
+        lista.addAll(professorList);
+
+        var pessoaComboBoxModel = new DefaultComboBoxModel<>(lista.toArray(new Pessoa[0]));
+
+        textProfessor.setModel(pessoaComboBoxModel);
+    }
+
+    private void professorSetComboBox() {
+        var pessoaDAO = new PessoaDAOImpl();
+        var professor = pessoaDAO.findAll();
+
+        var professorList = professor.stream()
+                .filter(pes -> pes.getTipo().equals("Professor"))
+                .toList();
+        var pessoaComboBoxModel = new DefaultComboBoxModel<>(professorList.toArray(new Pessoa[0]));
+
+        textProfessor.setModel(pessoaComboBoxModel);
     }
 
     public void telaSecundariaDisciplina(Disciplina disciplina) {

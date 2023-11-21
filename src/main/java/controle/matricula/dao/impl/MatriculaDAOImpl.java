@@ -16,8 +16,17 @@ import java.util.List;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Implementação do DAO para a entidade Matricula.
+ */
 public class MatriculaDAOImpl implements DAO<Matricula> {
 
+    /**
+     * Obtém uma conexão com o banco de dados.
+     *
+     * @return Conexão com o banco de dados.
+     * @throws SQLException Exceção lançada em caso de erro na conexão.
+     */
     private Connection getConnection() throws SQLException {
         return ConexaoDb.getConnection();
     }
@@ -138,6 +147,12 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
 
     }
 
+    /**
+     * Retorna o valor total pago em uma disciplina com base no ID da disciplina.
+     *
+     * @param id ID da disciplina.
+     * @return Valor total pago.
+     */
     public double findValorPagoByNomeDisciplina(int id) {
         var sql = "SELECT SUM(valorPago) AS somaValorPago FROM matricula WHERE disciplina = ?;";
 
@@ -158,6 +173,12 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         return 0;
     }
 
+    /**
+     * Retorna uma lista de nomes de disciplinas associadas a um aluno.
+     *
+     * @param idAluno ID do aluno.
+     * @return Lista de nomes de disciplinas associadas ao aluno.
+     */
     public List<String> findDisciplinaByAluno(int idAluno) {
         var sql = "SELECT DISTINCT disciplina FROM matricula WHERE aluno = ?;";
 
@@ -182,6 +203,13 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         return nomesDisciplinas;
     }
 
+    /**
+     * Define os parâmetros no PreparedStatement para uma matrícula.
+     *
+     * @param matricula Matrícula a ser cadastrada ou atualizada.
+     * @param stmt      PreparedStatement.
+     * @throws SQLException Exceção lançada em caso de erro no acesso ao banco de dados.
+     */
     private void setStatement(Matricula matricula, PreparedStatement stmt) throws SQLException {
         stmt.setObject(1, matricula.getDisciplina().getCodigo());
         stmt.setDouble(2, matricula.getValorPago());
@@ -194,7 +222,13 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         return null;
     }
 
-
+    /**
+     * Extrai os resultados do ResultSet e popula um objeto Matricula.
+     *
+     * @param rs        ResultSet contendo os resultados da consulta.
+     * @param matricula Objeto Matricula a ser populado.
+     * @throws SQLException Exceção lançada em caso de erro no acesso ao banco de dados.
+     */
     private void matriculaResult(ResultSet rs, Matricula matricula) throws SQLException {
         var disciplinaDAO = new DisciplinaDAOImpl();
         var disciplina = disciplinaDAO.findById(rs.getInt("disciplina"));
@@ -210,6 +244,12 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         matricula.setPeriodo(rs.getString("periodo"));
     }
 
+    /**
+     * Verifica se há vagas disponíveis em uma disciplina.
+     *
+     * @param codigoDisciplina Código da disciplina.
+     * @return True se há vagas disponíveis, False caso contrário.
+     */
     private boolean vagasDisponiveis(int codigoDisciplina) {
         var sql = "SELECT COUNT(*) as totalMatriculas FROM matricula WHERE disciplina = ?";
 
@@ -234,6 +274,12 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         }
     }
 
+    /**
+     * Obtém o limite de alunos para uma disciplina com base no código da disciplina.
+     *
+     * @param codigoDisciplina Código da disciplina.
+     * @return Limite de alunos para a disciplina.
+     */
     private int getLimiteAlunos(int codigoDisciplina) {
 
         var sql = "SELECT limiteAlunos FROM disciplina WHERE codigo = ?";
@@ -255,6 +301,13 @@ public class MatriculaDAOImpl implements DAO<Matricula> {
         }
     }
 
+    /**
+     * Obtém o código da disciplina com base no nome da disciplina.
+     *
+     * @param nomeDisciplina Nome da disciplina.
+     * @return Código da disciplina.
+     * @throws SQLException Exceção lançada em caso de erro no acesso ao banco de dados.
+     */
     private int getCodigoDisciplina(String nomeDisciplina) throws SQLException {
         String sql = "SELECT codigo FROM disciplina WHERE nomeDisciplina = ?";
 
