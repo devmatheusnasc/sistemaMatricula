@@ -1,6 +1,3 @@
 
-=
-java:S1948
-"'Make "dados" transient or serializable.(¿şäè
-A
-java:S1068"+Remove this unused "colunas" private field.(èÁâ
+D
+java:S1948"'Make "dados" transient or serializable.(¿şäè8¦Àªû¾1

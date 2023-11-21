@@ -21,6 +21,9 @@ import static javax.swing.SwingUtilities.getRoot;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
+/**
+ * Esta classe representa a tela secundária para manipulação de informações de Usuário.
+ */
 public class TelaSecundariaUsuario extends JFrame {
 
     private JTextField textNome;
@@ -41,6 +44,9 @@ public class TelaSecundariaUsuario extends JFrame {
     private Operacao operacao;
     private int id;
 
+    /**
+     * Construtor padrão para a inserção de um novo Usuário.
+     */
     public TelaSecundariaUsuario() {
         operacao = Operacao.INSERIR;
         inicializarCampos();
@@ -49,6 +55,12 @@ public class TelaSecundariaUsuario extends JFrame {
         setLocationRelativeTo(null);
     }
 
+
+    /**
+     * Construtor para a atualização de um Usuário existente.
+     *
+     * @param usuario O Usuário a ser atualizado.
+     */
     public TelaSecundariaUsuario(Usuario usuario) {
         operacao = Operacao.ATUALIZAR;
         id = usuario.getId();
@@ -61,6 +73,9 @@ public class TelaSecundariaUsuario extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Inicializa os componentes necessários.
+     */
     private void initComponents() {
 
         campoNome.setText("Nome:");
@@ -146,6 +161,9 @@ public class TelaSecundariaUsuario extends JFrame {
         pack();
     }
 
+    /**
+     * Configura os componentes para a operação de inserção.
+     */
     private void initComponentsInserir() {
 
         campoNome.setText("Nome:");
@@ -249,11 +267,21 @@ public class TelaSecundariaUsuario extends JFrame {
         );
     }
 
+    /**
+     * Manipula o evento de clique no botão Cancelar.
+     *
+     * @param evt O evento de clique.
+     */
     private void btnCancelar(ActionEvent evt) {
         var frame = (JFrame) getRoot((Component) evt.getSource());
         frame.dispose();
     }
 
+    /**
+     * Manipula o evento de clique no botão Confirmar.
+     *
+     * @param evt O evento de clique.
+     */
     private void btnConfirmar(ActionEvent evt) {
         var telaPrincipal = new TelaPrincipalUsuario();
         if (telaPrincipal.processarUsuario(id, textNome, textEmail, textCargo, textLogin, textSenha, operacao)) {
@@ -261,6 +289,11 @@ public class TelaSecundariaUsuario extends JFrame {
         }
     }
 
+    /**
+     * Preenche os campos com informações do Usuário existente.
+     *
+     * @param usuario O Usuário cujas informações serão exibidas.
+     */
     private void preencherCampo(Usuario usuario) {
         textNome.setText(usuario.getNome());
         textEmail.setText(usuario.getEmail());
@@ -275,6 +308,11 @@ public class TelaSecundariaUsuario extends JFrame {
         textSenha = new JPasswordField();
     }
 
+    /**
+     * Método principal para exibir a TelaSecundariaUsuario.
+     *
+     * @param usuario O Usuário a ser exibido. Se nulo, um novo Usuário será criado.
+     */
     public void telaSecundariaUsuario(Usuario usuario) {
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {

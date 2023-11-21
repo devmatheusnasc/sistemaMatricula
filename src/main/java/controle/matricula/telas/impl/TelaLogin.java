@@ -1,6 +1,5 @@
 package controle.matricula.telas.impl;
 
-
 import controle.matricula.dao.impl.UsuarioDAOImpl;
 
 import javax.swing.*;
@@ -10,6 +9,7 @@ import java.awt.*;
 import static controle.matricula.telas.impl.TelaMenu.telaMenu;
 import static java.awt.EventQueue.invokeLater;
 import static java.awt.Font.BOLD;
+import static java.lang.Short.MAX_VALUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static javax.swing.GroupLayout.Alignment.*;
@@ -17,18 +17,29 @@ import static javax.swing.GroupLayout.DEFAULT_SIZE;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
-public class TelaLogin extends javax.swing.JFrame {
+/**
+ * Representa a tela de login do sistema.
+ */
+public class TelaLogin extends JFrame {
+
 
     private JPasswordField campoSenha;
     private JTextField campoLogin;
 
+    /**
+     * Construtor da classe TelaLogin.
+     */
     public TelaLogin() {
         initComponents();
     }
 
+    /**
+     * Inicializa os componentes da tela.
+     */
     private void initComponents() {
 
         setTitle("Login");
@@ -43,7 +54,6 @@ public class TelaLogin extends javax.swing.JFrame {
         var senha = new JLabel();
         var separador = new JSeparator();
         var titulo = new JLabel();
-
 
         btnEntrar.setText("ENTRAR");
         btnEntrar.addActionListener(e -> checkLogin());
@@ -64,13 +74,13 @@ public class TelaLogin extends javax.swing.JFrame {
                         .addGroup(containerLayout.createSequentialGroup()
                                 .addGap(197, 197, 197)
                                 .addComponent(btnEntrar, PREFERRED_SIZE, 114, PREFERRED_SIZE)
-                                .addContainerGap(178, Short.MAX_VALUE))
+                                .addContainerGap(178, MAX_VALUE))
                         .addGroup(CENTER, containerLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(separador)
                                 .addContainerGap())
                         .addGroup(TRAILING, containerLayout.createSequentialGroup()
-                                .addContainerGap(DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap(DEFAULT_SIZE, MAX_VALUE)
                                 .addGroup(containerLayout.createParallelGroup(LEADING)
                                         .addGroup(TRAILING, containerLayout.createSequentialGroup()
                                                 .addGroup(containerLayout.createParallelGroup(LEADING)
@@ -79,7 +89,7 @@ public class TelaLogin extends javax.swing.JFrame {
                                                 .addGap(26, 26, 26)
                                                 .addGroup(containerLayout.createParallelGroup(LEADING, false)
                                                         .addComponent(campoLogin)
-                                                        .addComponent(campoSenha, DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                                                        .addComponent(campoSenha, DEFAULT_SIZE, 258, MAX_VALUE))
                                                 .addGap(87, 87, 87))
                                         .addGroup(TRAILING, containerLayout.createSequentialGroup()
                                                 .addComponent(titulo, PREFERRED_SIZE, 108, PREFERRED_SIZE)
@@ -88,9 +98,9 @@ public class TelaLogin extends javax.swing.JFrame {
         containerLayout.setVerticalGroup(
                 containerLayout.createParallelGroup(CENTER)
                         .addGroup(TRAILING, containerLayout.createSequentialGroup()
-                                .addContainerGap(39, Short.MAX_VALUE)
+                                .addContainerGap(39, MAX_VALUE)
                                 .addComponent(titulo, PREFERRED_SIZE, 27, PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(RELATED)
                                 .addComponent(separador, PREFERRED_SIZE, 10, PREFERRED_SIZE)
                                 .addGap(65, 65, 65)
                                 .addGroup(containerLayout.createParallelGroup(BASELINE)
@@ -112,20 +122,23 @@ public class TelaLogin extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(60, 60, 60)
                                 .addComponent(container, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
-                                .addContainerGap(58, Short.MAX_VALUE))
+                                .addContainerGap(58, MAX_VALUE))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(33, 33, 33)
                                 .addComponent(container, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
-                                .addContainerGap(43, Short.MAX_VALUE))
+                                .addContainerGap(43, MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Verifica as credenciais de login ao pressionar o botão ou a tecla Enter.
+     */
     private void checkLogin() {
         var usuario = campoLogin.getText();
         var senha = new String(campoSenha.getPassword());
@@ -142,6 +155,11 @@ public class TelaLogin extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método estático para encerrar a sessão de login e abrir a tela de login novamente.
+     *
+     * @param telaAtual A tela atual que será fechada.
+     */
     public static void encerrarSecao(JFrame telaAtual) {
         TelaLogin telaLoginInstance;
         if (telaAtual != null) {
@@ -151,14 +169,19 @@ public class TelaLogin extends javax.swing.JFrame {
         abrirTela();
         telaLoginInstance = new TelaLogin();
         invokeLater(() -> telaLoginInstance.setVisible(true));
-
     }
 
+    /**
+     * Método estático para exibir a tela de login.
+     */
     public static void telaLogin() {
         abrirTela();
         invokeLater(() -> new TelaLogin().setVisible(true));
     }
 
+    /**
+     * Método estático para configurar o visual da aplicação.
+     */
     public static void abrirTela() {
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {

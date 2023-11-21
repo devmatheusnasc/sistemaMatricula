@@ -1,12 +1,10 @@
 package controle.matricula.telas.impl;
 
 import controle.matricula.dao.impl.DisciplinaDAOImpl;
-import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Disciplina;
 import controle.matricula.model.Pessoa;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
 import controle.matricula.util.Operacao;
-import controle.matricula.util.exceptions.ValidacaoException;
 import controle.matricula.util.table.TableDisciplina;
 
 import javax.swing.*;
@@ -18,13 +16,18 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 import static javax.swing.BorderFactory.createLineBorder;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Tela principal para gerenciar disciplinas.
+ */
 public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, DisciplinaDAOImpl> {
 
     private final String[] colunas = new String[]{"Codigo", "Nome", "Carga Horária", "Professor", "Limite Alunos"};
 
+    /**
+     * Construtor da classe TelaPrincipalDisciplina.
+     */
     public TelaPrincipalDisciplina() {
         super();
         configurarTitulo();
@@ -32,8 +35,8 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
 
     @Override
     protected void listarAction(ActionEvent evt) {
-            var disciplinaDAO = new DisciplinaDAOImpl();
-            listar(disciplinaDAO, colunas);
+        var disciplinaDAO = new DisciplinaDAOImpl();
+        listar(disciplinaDAO, colunas);
     }
 
     @Override
@@ -79,6 +82,17 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         }
     }
 
+    /**
+     * Processa as informações da disciplina fornecidas pelo usuário.
+     *
+     * @param id             O ID da disciplina (pode ser nulo para operações de inserção).
+     * @param nomeDisciplina O nome da disciplina.
+     * @param cargaHoraria   A carga horária da disciplina.
+     * @param professor      O professor responsável pela disciplina.
+     * @param limiteAlunos   O limite de alunos para a disciplina.
+     * @param operacao       A operação a ser realizada (inserir ou atualizar).
+     * @return true se o processamento for bem-sucedido, false caso contrário.
+     */
     public boolean processarUsuario(int id, JTextField nomeDisciplina, JTextField cargaHoraria, JComboBox professor,
                                     JTextField limiteAlunos, Operacao operacao) {
 
@@ -89,7 +103,6 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         var professorText = (Pessoa) professor.getSelectedItem();
         var limiteAlunosText = limiteAlunos.getText();
         if (validarCampos(nomeDisciplina, cargaHoraria, limiteAlunos)) {
-
 
             var disciplina = setDisciplina(nomeDisciplinaText, cargaHorariaText, professorText, limiteAlunosText);
 
@@ -106,6 +119,15 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         return false;
     }
 
+    /**
+     * Cria um objeto Disciplina com base nos parâmetros fornecidos.
+     *
+     * @param nomeDisciplina O nome da disciplina.
+     * @param cargaHoraria   A carga horária da disciplina.
+     * @param professor      O professor responsável pela disciplina.
+     * @param limiteAlunos   O limite de alunos para a disciplina.
+     * @return Um objeto Disciplina criado com base nos parâmetros.
+     */
     private Disciplina setDisciplina(String nomeDisciplina, String cargaHoraria, Pessoa professor, String limiteAlunos) {
         var disciplina = new Disciplina();
 
@@ -117,6 +139,14 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         return disciplina;
     }
 
+    /**
+     * Valida os campos obrigatórios da tela.
+     *
+     * @param nomeDisciplina O campo do nome da disciplina.
+     * @param cargaHoraria   O campo da carga horária da disciplina.
+     * @param limiteAlunos   O campo do limite de alunos.
+     * @return true se os campos forem válidos, false caso contrário.
+     */
     private boolean validarCampos(JTextField nomeDisciplina, JTextField cargaHoraria, JTextField limiteAlunos) {
         var camposValidos = true;
 
@@ -127,6 +157,12 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         return camposValidos;
     }
 
+    /**
+     * Valida se um campo obrigatório foi preenchido.
+     *
+     * @param campo O campo a ser validado.
+     * @return true se o campo for válido, false caso contrário.
+     */
     private boolean validarCampoObrigatorio(JTextField campo) {
         var valido = !campo.getText().isEmpty();
         if (!valido) {
@@ -152,6 +188,9 @@ public class TelaPrincipalDisciplina extends TelaPrincipalBase<Disciplina, Disci
         labelPesquisar.setText("Nome da Disciplina:");
     }
 
+    /**
+     * Método estático para abrir a tela principal de disciplinas.
+     */
     public static void telaDisciplina() {
         tela(TelaPrincipalDisciplina.class);
     }

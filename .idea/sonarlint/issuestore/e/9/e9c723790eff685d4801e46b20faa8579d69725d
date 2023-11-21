@@ -1,5 +1,9 @@
 
-h
-java:S1128"FRemove this unused import 'controle.matricula.dao.impl.PessoaDAOImpl'.(¾¶ùˆúÿÿÿÿ8•éá÷¾1
-S
-java:S1144–"6Remove this unused private "validarDisciplina" method.(ÀÙ¨b8×Åá÷¾1
+l
+java:S1128"JRemove this unused import 'controle.matricula.dao.impl.DisciplinaDAOImpl'.(ûî¾Ëıÿÿÿÿ8àÄÒû¾1
+v
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(˜À»ßÿÿÿÿÿ8È³û¾1
+t
+java:S1128"RRemove this unused import 'controle.matricula.util.exceptions.ValidacaoException'.(›À Ëùÿÿÿÿ8€ßÒû¾1
+_
+java:S1128"BRemove this unused import 'javax.swing.JOptionPane.ERROR_MESSAGE'.(Öäø»8àÄÒû¾1

@@ -21,7 +21,11 @@ import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.SwingConstants.CENTER;
 
+/**
+ * Representa a tela do menu principal do sistema.
+ */
 public class TelaMenu extends JFrame {
+
 
     private final JButton btnDisciplina = new JButton();
     private final JButton btnEncerrarSecao = new JButton();
@@ -33,10 +37,12 @@ public class TelaMenu extends JFrame {
     private final JButton btnDisciplinaProfessor = new JButton();
     private final JPanel panelBtn = new JPanel();
     private final JPanel panelImg = new JPanel();
-    private final JLabel menssagem = new JLabel();
+    private final JLabel mensagem = new JLabel();
     private static TelaMenu telaMenuInstance;
 
-
+    /**
+     * Construtor da classe TelaMenu.
+     */
     public TelaMenu() {
         initComponents();
         pack();
@@ -48,6 +54,9 @@ public class TelaMenu extends JFrame {
         toFront();
     }
 
+    /**
+     * Inicializa os componentes da tela.
+     */
     private void initComponents() {
 
         btnUsuario.setText("Usuario");
@@ -74,9 +83,9 @@ public class TelaMenu extends JFrame {
         btnEncerrarSecao.setText("Encerrar Seção");
         btnEncerrarSecao.addActionListener(e -> encerrarSecao(this));
 
-        menssagem.setText("SysControl");
-        menssagem.setHorizontalAlignment(CENTER);
-        menssagem.setFont(new Font("Arial", Font.BOLD, 25));
+        mensagem.setText("SysControl");
+        mensagem.setHorizontalAlignment(CENTER);
+        mensagem.setFont(new Font("Arial", Font.BOLD, 25));
 
         var panelBtnLayout = new GroupLayout(panelBtn);
         panelBtn.setLayout(panelBtnLayout);
@@ -114,7 +123,6 @@ public class TelaMenu extends JFrame {
                                 .addGap(16, 16, 16))
         );
 
-
         var panelImgLayout = new GroupLayout(panelImg);
         panelImg.setLayout(panelImgLayout);
         panelImgLayout.setHorizontalGroup(
@@ -125,14 +133,14 @@ public class TelaMenu extends JFrame {
                                         .addGroup(panelImgLayout.createSequentialGroup()
                                                 .addGap(0, 269, MAX_VALUE)
                                                 .addComponent(btnEncerrarSecao))
-                                        .addComponent(menssagem, DEFAULT_SIZE, DEFAULT_SIZE, MAX_VALUE))
+                                        .addComponent(mensagem, DEFAULT_SIZE, DEFAULT_SIZE, MAX_VALUE))
                                 .addContainerGap())
         );
         panelImgLayout.setVerticalGroup(
                 panelImgLayout.createParallelGroup(LEADING)
                         .addGroup(TRAILING, panelImgLayout.createSequentialGroup()
                                 .addContainerGap(DEFAULT_SIZE, MAX_VALUE)
-                                .addComponent(menssagem, PREFERRED_SIZE, 154, PREFERRED_SIZE)
+                                .addComponent(mensagem, PREFERRED_SIZE, 154, PREFERRED_SIZE)
                                 .addGap(148, 148, 148)
                                 .addComponent(btnEncerrarSecao)
                                 .addContainerGap())
@@ -157,7 +165,11 @@ public class TelaMenu extends JFrame {
         );
     }
 
-
+    /**
+     * Método estático para exibir a tela do menu principal.
+     *
+     * @param telaAtual A tela atual que será fechada.
+     */
     public static void telaMenu(JFrame telaAtual) {
         if (telaAtual != null) {
             telaAtual.dispose();
@@ -174,5 +186,4 @@ public class TelaMenu extends JFrame {
             telaMenuInstance.toFront();
         }
     }
-
 }

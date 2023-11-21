@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import static java.awt.EventQueue.invokeLater;
 import static java.lang.Short.MAX_VALUE;
@@ -24,6 +25,9 @@ import static javax.swing.SwingUtilities.getRoot;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
+/**
+ * Tela secundária para manipulação de matrículas.
+ */
 public class TelaSecundariaMatricula extends JFrame {
 
     private JComboBox<Disciplina> textDisciplina;
@@ -33,6 +37,9 @@ public class TelaSecundariaMatricula extends JFrame {
     private Operacao operacao;
     private int id;
 
+    /**
+     * Construtor para uma nova matrícula (inserção).
+     */
     public TelaSecundariaMatricula() {
         operacao = Operacao.INSERIR;
         inicializarCampos();
@@ -44,11 +51,16 @@ public class TelaSecundariaMatricula extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Construtor para a edição de uma matrícula existente.
+     *
+     * @param matricula A matrícula a ser editada.
+     */
     public TelaSecundariaMatricula(Matricula matricula) {
         operacao = Operacao.ATUALIZAR;
         id = matricula.getIdMat();
         inicializarCampos();
-        alunoSetComboBox();
+        alunoSetComboBox(matricula);
         disciplinaSetComboBox();
         preencherCampo(matricula);
         initComponents();
@@ -155,11 +167,21 @@ public class TelaSecundariaMatricula extends JFrame {
         );
     }
 
+    /**
+     * Fecha a janela ao clicar no botão Cancelar.
+     *
+     * @param evt Evento de ação.
+     */
     private void btnCancelar(ActionEvent evt) {
         var frame = (JFrame) getRoot((Component) evt.getSource());
         frame.dispose();
     }
 
+    /**
+     * Confirma a operação e fecha a janela ao clicar no botão Confirmar.
+     *
+     * @param evt Evento de ação.
+     */
     private void btnConfirmar(ActionEvent evt) {
         var telaPrincipal = new TelaPrincipalMatricula();
         if (telaPrincipal.processarMatricula(id, textDisciplina, textValorPago, textAluno, textPeriodo, operacao)) {
@@ -167,18 +189,29 @@ public class TelaSecundariaMatricula extends JFrame {
         }
     }
 
+    /**
+     * Preenche os campos da tela com os dados da matrícula.
+     *
+     * @param matricula Objeto Matricula contendo os dados.
+     */
     private void preencherCampo(Matricula matricula) {
         textValorPago.setText(String.valueOf(matricula.getValorPago()));
         textPeriodo.setText(matricula.getPeriodo());
     }
 
+    /**
+     * Inicializa os campos da tela.
+     */
     private void inicializarCampos() {
-        textDisciplina = new JComboBox();
+        textDisciplina = new JComboBox<>();
         textValorPago = new JTextField();
-        textAluno = new JComboBox();
+        textAluno = new JComboBox<>();
         textPeriodo = new JTextField();
     }
 
+    /**
+     * Configura o ComboBox de alunos com base nos dados do banco.
+     */
     private void alunoSetComboBox() {
         var pessoaDAO = new PessoaDAOImpl();
         var aluno = pessoaDAO.findAll();
@@ -192,6 +225,36 @@ public class TelaSecundariaMatricula extends JFrame {
         textAluno.setModel(pessoaComboBoxModel);
     }
 
+    /**
+     * Configura o modelo do ComboBox de alunos com base nas informações da matrícula.
+     *
+     * @param matricula A matrícula utilizada para obter informações sobre o aluno atual.
+     */
+    private void alunoSetComboBox(Matricula matricula) {
+        var alunoAtual = matricula.getAluno().getNomePessoa();
+
+        var pessoaDAO = new PessoaDAOImpl();
+        var aluno = pessoaDAO.findAll();
+
+        var alunoList = aluno.stream()
+                .filter(pessoa -> pessoa.getTipo().equals("Aluno"))
+                .filter(pes -> !pes.getNomePessoa().equals(alunoAtual))
+                .toList();
+
+        var lista = new ArrayList<Pessoa>();
+
+        lista.add(new Pessoa(0, alunoAtual, "", "", "", "", "", "Aluno"));
+
+        lista.addAll(alunoList);
+
+        var pessoaComboBoxModel = new DefaultComboBoxModel<>(alunoList.toArray(new Pessoa[0]));
+
+        textAluno.setModel(pessoaComboBoxModel);
+    }
+
+    /**
+     * Configura o ComboBox de disciplinas com base nos dados do banco.
+     */
     private void disciplinaSetComboBox() {
         var disciplinaDAO = new DisciplinaDAOImpl();
         var disciplina = disciplinaDAO.findAll();
@@ -201,6 +264,12 @@ public class TelaSecundariaMatricula extends JFrame {
         textDisciplina.setModel(disciplinaComboBoxModel);
     }
 
+
+    /**
+     * Método para exibir a tela secundária de matrículas.
+     *
+     * @param matricula A matrícula a ser editada (pode ser nula para inserção).
+     */
     public void telaSecundariaMatricula(Matricula matricula) {
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {

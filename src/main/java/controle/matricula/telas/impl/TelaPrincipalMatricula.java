@@ -2,10 +2,10 @@ package controle.matricula.telas.impl;
 
 import controle.matricula.dao.impl.DisciplinaDAOImpl;
 import controle.matricula.dao.impl.MatriculaDAOImpl;
-import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Disciplina;
 import controle.matricula.model.Matricula;
 import controle.matricula.model.Pessoa;
+import controle.matricula.telas.impl.TelaSecundariaMatricula;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
 import controle.matricula.util.Operacao;
 import controle.matricula.util.exceptions.ValidacaoException;
@@ -23,10 +23,16 @@ import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Tela principal para gerenciar matrículas.
+ */
 public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, MatriculaDAOImpl> {
 
-    private final String[] colunas = new String[]{"ID", "Disciplina", "Data da Matricula", "Valor Pago", "Aluno", "Periodo"};
+    private final String[] colunas = new String[]{"ID", "Disciplina", "Data da Matricula", "Valor Pago", "Aluno", "Período"};
 
+    /**
+     * Construtor da classe TelaPrincipalMatricula.
+     */
     public TelaPrincipalMatricula() {
         super();
         configurarTitulo();
@@ -83,6 +89,17 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         }
     }
 
+    /**
+     * Processa as informações da matrícula fornecidas pelo usuário.
+     *
+     * @param id              O ID da matrícula (pode ser nulo para operações de inserção).
+     * @param disciplinaField O campo da disciplina da matrícula.
+     * @param valorPagoField  O campo do valor pago na matrícula.
+     * @param alunoField      O campo do aluno da matrícula.
+     * @param periodoField    O campo do período da matrícula.
+     * @param operacao        A operação a ser realizada (inserir ou atualizar).
+     * @return true se o processamento for bem-sucedido, false caso contrário.
+     */
     public boolean processarMatricula(int id, JComboBox disciplinaField, JTextField valorPagoField, JComboBox alunoField,
                                       JTextField periodoField, Operacao operacao) {
 
@@ -108,15 +125,31 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return false;
     }
 
-    private Matricula setMatricula(Disciplina disciplina, String valorPagoText, Pessoa aluno, String periodo) {
+    /**
+     * Cria um objeto Matricula com base nos parâmetros fornecidos.
+     *
+     * @param disciplina A disciplina da matrícula.
+     * @param valorPago  O valor pago na matrícula.
+     * @param aluno      O aluno da matrícula.
+     * @param periodo    O período da matrícula.
+     * @return Um objeto Matricula criado com base nos parâmetros.
+     */
+    private Matricula setMatricula(Disciplina disciplina, String valorPago, Pessoa aluno, String periodo) {
         var matricula = new Matricula();
         matricula.setDisciplina(disciplina);
-        matricula.setValorPago(parseDouble(valorPagoText));
+        matricula.setValorPago(parseDouble(valorPago));
         matricula.setAluno(aluno);
         matricula.setPeriodo(periodo);
         return matricula;
     }
 
+    /**
+     * Valida os campos obrigatórios da tela.
+     *
+     * @param valorPagoField O campo do valor pago na matrícula.
+     * @param periodoField   O campo do período da matrícula.
+     * @return true se os campos forem válidos, false caso contrário.
+     */
     private boolean validarCampos(JTextField valorPagoField, JTextField periodoField) {
         var camposValidos = true;
 
@@ -126,6 +159,12 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return camposValidos;
     }
 
+    /**
+     * Valida se um campo obrigatório foi preenchido.
+     *
+     * @param campo O campo a ser validado.
+     * @return true se o campo for válido, false caso contrário.
+     */
     private boolean validarCampoObrigatorio(JTextField campo) {
         var valido = !campo.getText().isEmpty();
         if (!valido) {
@@ -136,6 +175,12 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         return valido;
     }
 
+    /**
+     * Valida se um campo contém um valor numérico do tipo double.
+     *
+     * @param campo O campo a ser validado.
+     * @return true se o campo contiver um valor numérico do tipo double, false caso contrário.
+     */
     private boolean validarCampoDouble(JTextField campo) {
         try {
             parseDouble(campo.getText());
@@ -144,18 +189,6 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         } catch (NumberFormatException ex) {
             campo.setBorder(createLineBorder(Color.RED));
             return false;
-        }
-    }
-
-    private Disciplina validarDisciplina(String nomeDisciplina) {
-        var disciplinaDAO = new DisciplinaDAOImpl();
-        var disciplina = disciplinaDAO.findByNome(nomeDisciplina);
-
-        if (disciplina != null && disciplina.getNomeDisciplina().equalsIgnoreCase(nomeDisciplina)) {
-            return disciplina;
-        } else {
-            showMessageDialog(null, "Disciplina não encontrada.", "Erro", ERROR_MESSAGE);
-            throw new ValidacaoException("Disciplina não encontrada.");
         }
     }
 
@@ -174,8 +207,10 @@ public class TelaPrincipalMatricula extends TelaPrincipalBase<Matricula, Matricu
         labelPesquisar.setText("Número da Matrícula:");
     }
 
+    /**
+     * Método estático para abrir a tela principal de matrículas.
+     */
     public static void telaMatricula() {
         tela(TelaPrincipalMatricula.class);
     }
-
 }

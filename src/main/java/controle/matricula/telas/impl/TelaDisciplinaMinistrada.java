@@ -4,6 +4,7 @@ import controle.matricula.dao.impl.DisciplinaDAOImpl;
 import controle.matricula.dao.impl.PessoaDAOImpl;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -11,13 +12,22 @@ import java.util.List;
 import static controle.matricula.telas.telabase.TelaPrincipalBase.AVISO;
 import static java.awt.EventQueue.invokeLater;
 import static java.awt.Font.BOLD;
+import static java.lang.Short.MAX_VALUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
+import static javax.swing.GroupLayout.Alignment.*;
+import static javax.swing.GroupLayout.DEFAULT_SIZE;
+import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
+import static javax.swing.LayoutStyle.ComponentPlacement.UNRELATED;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
+/**
+ * Representa a tela de Disciplinas Ministradas.
+ */
 public class TelaDisciplinaMinistrada extends JFrame {
 
     private JLabel campoProfessor = new JLabel();
@@ -32,6 +42,9 @@ public class TelaDisciplinaMinistrada extends JFrame {
 
     private JLabel titulo = new JLabel();
 
+    /**
+     * Construtor da classe TelaDisciplinaMinistrada.
+     */
     public TelaDisciplinaMinistrada() {
         initComponents();
         pack();
@@ -44,6 +57,9 @@ public class TelaDisciplinaMinistrada extends JFrame {
         campoProfessor.setFont(new Font("Arial", BOLD, 12));
     }
 
+    /**
+     * Inicializa os componentes da tela.
+     */
     private void initComponents() {
 
         titulo.setText("Disciplinas Ministradas");
@@ -55,81 +71,86 @@ public class TelaDisciplinaMinistrada extends JFrame {
         btnPesquisar.setText("Pesquisar");
         btnPesquisar.addActionListener(this::btnPesquisar);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        var jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel1Layout.createParallelGroup(LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(LEADING)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(158, 158, 158)
                                                 .addComponent(titulo))
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(TRAILING, false)
+                                                .addGroup(LEADING, jPanel1Layout.createSequentialGroup()
+                                                        .addGroup(jPanel1Layout.createParallelGroup(TRAILING)
+                                                                .addGroup(LEADING, jPanel1Layout.createSequentialGroup()
                                                                         .addContainerGap()
                                                                         .addComponent(campoNomeProfessor)
                                                                         .addGap(18, 18, 18)
                                                                         .addComponent(textNomeProfessor))
-                                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                                                .addGroup(LEADING, jPanel1Layout.createSequentialGroup()
                                                                         .addGap(140, 140, 140)
                                                                         .addComponent(campoProfessor)))
                                                         .addGap(18, 18, 18)
                                                         .addComponent(btnPesquisar))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                                .addGroup(LEADING, jPanel1Layout.createSequentialGroup()
                                                         .addContainerGap()
-                                                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 434, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addComponent(jSeparator1, PREFERRED_SIZE, 434, PREFERRED_SIZE)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(60, 60, 60)
-                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jScrollPane1, PREFERRED_SIZE, 319, PREFERRED_SIZE)))
+                                .addContainerGap(DEFAULT_SIZE, MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(669, 669, 669)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(jLabel2, PREFERRED_SIZE, 73, PREFERRED_SIZE)
+                                        .addContainerGap(DEFAULT_SIZE, MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                jPanel1Layout.createParallelGroup(LEADING)
+                        .addGroup(TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addComponent(titulo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addPreferredGap(UNRELATED)
+                                .addComponent(jSeparator1, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
+                                .addPreferredGap(RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(BASELINE)
                                         .addComponent(campoNomeProfessor)
-                                        .addComponent(textNomeProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(textNomeProfessor, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
                                         .addComponent(btnPesquisar))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                                .addPreferredGap(RELATED, 9, MAX_VALUE)
                                 .addComponent(campoProfessor)
                                 .addGap(24, 24, 24)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(135, 135, 135)
                                         .addComponent(jLabel2)
-                                        .addContainerGap(148, Short.MAX_VALUE)))
+                                        .addContainerGap(148, MAX_VALUE)))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(24, 24, 24)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(17, Short.MAX_VALUE))
+                                .addComponent(jPanel1, PREFERRED_SIZE, 449, PREFERRED_SIZE)
+                                .addContainerGap(17, MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 15, Short.MAX_VALUE))
+                                .addComponent(jPanel1, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
+                                .addGap(0, 15, MAX_VALUE))
         );
     }
 
+    /**
+     * Método acionado pelo botão de pesquisa.
+     *
+     * @param evt Evento associado à ação de pesquisa.
+     */
     private void btnPesquisar(ActionEvent evt) {
 
         var input = textNomeProfessor.getText();
@@ -145,6 +166,11 @@ public class TelaDisciplinaMinistrada extends JFrame {
 
     }
 
+    /**
+     * Lista as disciplinas ministradas pelo professor.
+     *
+     * @param idProfessor ID do professor.
+     */
     private void listDisciplina(int idProfessor) {
         var disciplinaDAO = new DisciplinaDAOImpl();
 
@@ -165,10 +191,13 @@ public class TelaDisciplinaMinistrada extends JFrame {
         textNomeProfessor.setText("");
     }
 
+    /**
+     * Método estático para exibir a tela de Disciplinas Ministradas.
+     */
     public static void telaDisciplinaMinistrada() {
 
         try {
-            for (UIManager.LookAndFeelInfo info : getInstalledLookAndFeels()) {
+            for (LookAndFeelInfo info : getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     setLookAndFeel(info.getClassName());
                     break;
@@ -180,4 +209,3 @@ public class TelaDisciplinaMinistrada extends JFrame {
         invokeLater(() -> new TelaDisciplinaMinistrada().setVisible(true));
     }
 }
-

@@ -2,6 +2,7 @@ package controle.matricula.telas.impl;
 
 import controle.matricula.dao.impl.PessoaDAOImpl;
 import controle.matricula.model.Pessoa;
+import controle.matricula.telas.impl.TelaSecundariaPessoa;
 import controle.matricula.telas.telabase.TelaPrincipalBase;
 import controle.matricula.util.Operacao;
 import controle.matricula.util.table.TablePessoa;
@@ -16,10 +17,16 @@ import java.util.List;
 import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Tela principal para gerenciar pessoas.
+ */
 public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl> {
 
     private final String[] colunas = new String[]{"ID", "Nome", "Endereço", "UF", "Telefone", "CPF", "E-mail", "Tipo"};
 
+    /**
+     * Construtor da classe TelaPrincipalPessoa.
+     */
     public TelaPrincipalPessoa() {
         super();
         configurarTitulo();
@@ -36,8 +43,6 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
     protected TableModel criarTableModel(List<Pessoa> itens) {
         return new TablePessoa(itens, colunas);
     }
-
-
 
     @Override
     protected void inserir(ActionEvent evt) {
@@ -77,8 +82,23 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         }
     }
 
-    public boolean processarUsuario(int id, JTextField nome, JTextField endereco, JComboBox uf, JTextField cpf,
-                                    JTextField telefone, JTextField email, JComboBox tipo,  Operacao operacao) {
+    /**
+     * Processa as informações da pessoa fornecidas pelo usuário.
+     *
+     * @param id       O ID da pessoa (pode ser nulo para operações de inserção).
+     * @param nome     O campo do nome da pessoa.
+     * @param endereco O campo do endereço da pessoa.
+     * @param uf       O campo do UF da pessoa.
+     * @param cpf      O campo do CPF da pessoa.
+     * @param telefone O campo do telefone da pessoa.
+     * @param email    O campo do e-mail da pessoa.
+     * @param tipo     O campo do tipo da pessoa.
+     * @param operacao A operação a ser realizada (inserir ou atualizar).
+     * @return true se o processamento for bem-sucedido, false caso contrário.
+     */
+    public boolean processarUsuario(int id, JTextField nome, JTextField endereco, JComboBox uf,
+                                    JTextField cpf, JTextField telefone, JTextField email, JComboBox tipo,
+                                    Operacao operacao) {
 
         var pessoaDao = new PessoaDAOImpl();
 
@@ -93,18 +113,30 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         var pessoa = setPessoa(nomeText, enderecoText, ufText, cpfText, telefoneText, emailText, tipoText);
 
         if (operacao == Operacao.INSERIR && (validarCampos(nome, endereco, cpf, telefone, email))) {
-                pessoaDao.insert(pessoa);
-                return true;
+            pessoaDao.insert(pessoa);
+            return true;
         }
 
-        if (operacao == Operacao.ATUALIZAR && (validarCampos(nome, endereco, null , telefone, email))) {
-                pessoaDao.update(id, pessoa);
-                return true;
+        if (operacao == Operacao.ATUALIZAR && (validarCampos(nome, endereco, null, telefone, email))) {
+            pessoaDao.update(id, pessoa);
+            return true;
         }
 
         return false;
     }
 
+    /**
+     * Cria um objeto Pessoa com base nos parâmetros fornecidos.
+     *
+     * @param nome     O nome da pessoa.
+     * @param endereco O endereço da pessoa.
+     * @param uf       O UF da pessoa.
+     * @param cpf      O CPF da pessoa.
+     * @param telefone O telefone da pessoa.
+     * @param email    O e-mail da pessoa.
+     * @param tipo     O tipo da pessoa.
+     * @return Um objeto Pessoa criado com base nos parâmetros.
+     */
     private Pessoa setPessoa(String nome, String endereco, String uf, String cpf, String telefone, String email, String tipo) {
         var pessoa = new Pessoa();
 
@@ -119,6 +151,16 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         return pessoa;
     }
 
+    /**
+     * Valida os campos obrigatórios da tela.
+     *
+     * @param nome     O campo do nome da pessoa.
+     * @param endereco O campo do endereço da pessoa.
+     * @param cpf      O campo do CPF da pessoa.
+     * @param telefone O campo do telefone da pessoa.
+     * @param email    O campo do e-mail da pessoa.
+     * @return true se os campos forem válidos, false caso contrário.
+     */
     private boolean validarCampos(JTextField nome, JTextField endereco, JTextField cpf, JTextField telefone, JTextField email) {
         var camposValidos = true;
 
@@ -133,6 +175,12 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         return camposValidos;
     }
 
+    /**
+     * Valida se um campo é obrigatório e exibe uma borda vermelha se estiver vazio.
+     *
+     * @param campo O campo a ser validado.
+     * @return true se o campo não estiver vazio, false caso contrário.
+     */
     private boolean validarCampoObrigatorio(JTextField campo) {
         var valido = !campo.getText().isEmpty();
         if (!valido) {
@@ -158,6 +206,9 @@ public class TelaPrincipalPessoa extends TelaPrincipalBase<Pessoa, PessoaDAOImpl
         labelPesquisar.setText("Nome:");
     }
 
+    /**
+     * Método estático para abrir a tela principal de pessoas.
+     */
     public static void telaPessoa() {
         tela(TelaPrincipalPessoa.class);
     }

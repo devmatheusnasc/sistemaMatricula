@@ -16,10 +16,16 @@ import java.util.List;
 import static javax.swing.BorderFactory.createLineBorder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Tela principal para gerenciar usuários.
+ */
 public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOImpl> {
 
     private final String[] colunas = new String[]{"ID", "Nome", "E-mail", "Cargo"};
 
+    /**
+     * Construtor da classe TelaPrincipalUsuario.
+     */
     public TelaPrincipalUsuario() {
         super();
         configurarTitulo();
@@ -75,6 +81,18 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         }
     }
 
+    /**
+     * Processa as informações do usuário fornecidas pelo usuário.
+     *
+     * @param id       O ID do usuário (pode ser nulo para operações de inserção).
+     * @param nome     O campo do nome do usuário.
+     * @param email    O campo do e-mail do usuário.
+     * @param cargo    O campo do cargo do usuário.
+     * @param login    O campo do login do usuário.
+     * @param senha    O campo da senha do usuário.
+     * @param operacao A operação a ser realizada (inserir ou atualizar).
+     * @return true se o processamento for bem-sucedido, false caso contrário.
+     */
     public boolean processarUsuario(int id, JTextField nome, JTextField email, JTextField cargo, JTextField login,
                                     JTextField senha, Operacao operacao) {
 
@@ -89,18 +107,28 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         var usuario = setUsuario(nomeText, emailText, cargoText, loginText, senhaText);
 
         if (operacao == Operacao.INSERIR && (validarCampos(nome, email, cargo, login, senha))) {
-                usuarioDAO.insert(usuario);
-                return true;
+            usuarioDAO.insert(usuario);
+            return true;
         }
 
         if (operacao == Operacao.ATUALIZAR && (validarCampos(nome, email, cargo, null, null))) {
-                usuarioDAO.update(id, usuario);
-                return true;
+            usuarioDAO.update(id, usuario);
+            return true;
         }
 
         return false;
     }
 
+    /**
+     * Cria um objeto Usuario com base nos parâmetros fornecidos.
+     *
+     * @param nome  O nome do usuário.
+     * @param email O e-mail do usuário.
+     * @param cargo O cargo do usuário.
+     * @param login O login do usuário.
+     * @param senha A senha do usuário.
+     * @return Um objeto Usuario criado com base nos parâmetros.
+     */
     private Usuario setUsuario(String nome, String email, String cargo, String login, String senha) {
         var usuario = new Usuario();
         usuario.setNome(nome);
@@ -112,7 +140,13 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         return usuario;
     }
 
-
+    /**
+     * Valida os campos de login e senha.
+     *
+     * @param login O campo do login do usuário.
+     * @param senha O campo da senha do usuário.
+     * @return true se os campos de login e senha forem válidos, false caso contrário.
+     */
     private boolean validarLoginAndSenha(JTextField login, JTextField senha) {
         var camposValidos = true;
 
@@ -122,6 +156,16 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         return camposValidos;
     }
 
+    /**
+     * Valida os campos da tela.
+     *
+     * @param nome  O campo do nome do usuário.
+     * @param email O campo do e-mail do usuário.
+     * @param cargo O campo do cargo do usuário.
+     * @param login O campo do login do usuário.
+     * @param senha O campo da senha do usuário.
+     * @return true se os campos forem válidos, false caso contrário.
+     */
     private boolean validarCampos(JTextField nome, JTextField email, JTextField cargo, JTextField login, JTextField senha) {
         var camposValidos = true;
 
@@ -136,6 +180,12 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         return camposValidos;
     }
 
+    /**
+     * Valida se um campo é obrigatório e exibe uma borda vermelha se estiver vazio.
+     *
+     * @param campo O campo a ser validado.
+     * @return true se o campo não estiver vazio, false caso contrário.
+     */
     private boolean validarCampoObrigatorio(JTextField campo) {
         var valido = !campo.getText().isEmpty();
         if (!valido) {
@@ -161,6 +211,9 @@ public class TelaPrincipalUsuario extends TelaPrincipalBase<Usuario, UsuarioDAOI
         labelPesquisar.setText("Nome: ");
     }
 
+    /**
+     * Método estático para abrir a tela principal de usuários.
+     */
     public static void telaUsuario() {
         tela(TelaPrincipalUsuario.class);
     }

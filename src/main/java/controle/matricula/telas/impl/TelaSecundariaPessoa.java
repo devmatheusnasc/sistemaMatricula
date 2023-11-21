@@ -23,6 +23,9 @@ import static javax.swing.SwingUtilities.getRoot;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
+/**
+ * Esta classe representa a tela secundária para manipulação de informações de Pessoa.
+ */
 public class TelaSecundariaPessoa extends JFrame {
 
     private JPanel jPanel = new JPanel();
@@ -49,6 +52,9 @@ public class TelaSecundariaPessoa extends JFrame {
             "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
             "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
 
+    /**
+     * Construtor padrão para a inserção de uma nova Pessoa.
+     */
     public TelaSecundariaPessoa() {
         operacao = INSERIR;
         inicializarCampos();
@@ -58,6 +64,11 @@ public class TelaSecundariaPessoa extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Construtor para a atualização de uma Pessoa existente.
+     *
+     * @param pessoa A Pessoa a ser atualizada.
+     */
     public TelaSecundariaPessoa(Pessoa pessoa) {
         operacao = ATUALIZAR;
         id = pessoa.getIdPessoa();
@@ -70,6 +81,9 @@ public class TelaSecundariaPessoa extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Configura os componentes para a operação de inserção.
+     */
     private void initComponentsInserir() {
 
         textTelefone.setColumns(11);
@@ -193,6 +207,9 @@ public class TelaSecundariaPessoa extends JFrame {
         );
     }
 
+    /**
+     * Configura os componentes para a operação de atualização.
+     */
     private void initComponents() {
 
         textTelefone.setColumns(11);
@@ -292,11 +309,21 @@ public class TelaSecundariaPessoa extends JFrame {
         );
     }
 
+    /**
+     * Manipula o evento de clique no botão Cancelar.
+     *
+     * @param evt O evento de clique.
+     */
     private void btnCancelar(ActionEvent evt) {
         var frame = (JFrame) getRoot((Component) evt.getSource());
         frame.dispose();
     }
 
+    /**
+     * Manipula o evento de clique no botão Confirmar.
+     *
+     * @param evt O evento de clique.
+     */
     private void btnConfirmar(ActionEvent evt) {
         var telaPrincipal = new TelaPrincipalPessoa();
         if (telaPrincipal.processarUsuario(id, textNome, textEndereco, textUf, textCpf, textTelefone, textEmail, textTipo, operacao)) {
@@ -304,6 +331,11 @@ public class TelaSecundariaPessoa extends JFrame {
         }
     }
 
+    /**
+     * Preenche os campos com informações da Pessoa existente.
+     *
+     * @param pessoa A Pessoa cujas informações serão exibidas.
+     */
     private void preencherCampo(Pessoa pessoa) {
         textNome.setText(pessoa.getNomePessoa());
         textEndereco.setText(pessoa.getEndereco());
@@ -311,6 +343,9 @@ public class TelaSecundariaPessoa extends JFrame {
         textEmail.setText(pessoa.getEmail());
     }
 
+    /**
+     * Inicializa os campos necessários.
+     */
     private void inicializarCampos() {
         textNome = new JTextField();
         textEndereco = new JTextField();
@@ -321,6 +356,11 @@ public class TelaSecundariaPessoa extends JFrame {
         textTipo = new JComboBox<>();
     }
 
+    /**
+     * Método principal para exibir a TelaSecundariaPessoa.
+     *
+     * @param pessoa A Pessoa a ser exibida. Se nula, uma nova Pessoa será criada.
+     */
     public void telaSecundariaPessoa(Pessoa pessoa) {
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {
@@ -335,7 +375,6 @@ public class TelaSecundariaPessoa extends JFrame {
         if (pessoa == null) {
             invokeLater(() -> new TelaSecundariaPessoa().setVisible(true));
         } else {
-            System.out.println(pessoa.getCpf());
             invokeLater(() -> new TelaSecundariaPessoa(pessoa).setVisible(true));
         }
     }

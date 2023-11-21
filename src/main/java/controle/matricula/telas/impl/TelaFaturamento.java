@@ -25,6 +25,9 @@ import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 import static javax.swing.UIManager.setLookAndFeel;
 
+/**
+ * Representa a tela de Faturamento.
+ */
 public class TelaFaturamento extends JFrame {
 
     private JPanel jPanel = new JPanel();
@@ -42,6 +45,9 @@ public class TelaFaturamento extends JFrame {
 
     private static TelaFaturamento telaMenuInstance;
 
+    /**
+     * Construtor da classe TelaFaturamento.
+     */
     public TelaFaturamento() {
         periodoSelectModel();
         disciplinasSelectModel();
@@ -55,6 +61,9 @@ public class TelaFaturamento extends JFrame {
         setTitle("SysControl");
     }
 
+    /**
+     * Inicializa os componentes da tela.
+     */
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -158,14 +167,27 @@ public class TelaFaturamento extends JFrame {
         );
     }
 
+    /**
+     * Método acionado pelo botão de Menu.
+     *
+     * @param evt Evento associado à ação do botão.
+     */
     private void btnMenu(ActionEvent evt) {
         telaMenu(this);
     }
 
+    /**
+     * Método acionado pela seleção de Período ou Disciplina.
+     *
+     * @param evt Evento associado à ação da seleção.
+     */
     private void btnPeriodo(ActionEvent evt) {
         valorObtidoSelectModel();
     }
 
+    /**
+     * Define o modelo para a seleção de Período.
+     */
     private void periodoSelectModel() {
 
         String[] semestres = new String[12];
@@ -176,6 +198,9 @@ public class TelaFaturamento extends JFrame {
         textSelectPeriodo.setModel(new DefaultComboBoxModel<>(semestres));
     }
 
+    /**
+     * Define o modelo para a seleção de Disciplinas.
+     */
     private void disciplinasSelectModel() {
         var disciplinaDAO = new DisciplinaDAOImpl();
         var disciplinas = disciplinaDAO.findAllByNome();
@@ -190,6 +215,9 @@ public class TelaFaturamento extends JFrame {
         textSelectDisciplina.setModel(new DefaultComboBoxModel<>(arrayNomesDisciplinas));
     }
 
+    /**
+     * Atualiza o valor obtido com base nas seleções de Disciplina e Período.
+     */
     private void valorObtidoSelectModel() {
         String disciplinaSelecionada = (String) textSelectDisciplina.getSelectedItem();
         String periodoSelecionado = (String) textSelectPeriodo.getSelectedItem();
@@ -203,7 +231,9 @@ public class TelaFaturamento extends JFrame {
         textValorObtido.setText(valueOf(valorFinal));
     }
 
-
+    /**
+     * Método estático para exibir a tela de Faturamento.
+     */
     public static void telaFaturamento() {
 
         if (telaMenuInstance == null) {

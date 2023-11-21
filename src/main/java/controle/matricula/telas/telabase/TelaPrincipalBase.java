@@ -29,6 +29,11 @@ import static javax.swing.JOptionPane.*;
 import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 
+/**
+ * Classe abstrata que serve de base para as telas principais do sistema.
+ * @param <T> Tipo de entidade manipulada pela tela.
+ * @param <D> Tipo de DAO associado à entidade.
+ */
 public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
 
     protected JTable tabelaPrincipal;
@@ -40,6 +45,10 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
 
     public static final String AVISO = "AVISO";
 
+    /**
+     * Construtor da classe TelaPrincipalBase.
+     * Inicializa e configura os componentes da tela.
+     */
     public TelaPrincipalBase() {
         initComponents();
         pack();
@@ -49,6 +58,9 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
         setResizable(false);
     }
 
+    /**
+     * Inicializa os componentes da tela.
+     */
     private void initComponents() {
 
         var btnPesquisar = new JButton();
@@ -215,6 +227,11 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
         );
     }
 
+    /**
+     * Lista os itens na tabela com base nos critérios de pesquisa.
+     * @param dao DAO utilizado para acessar o banco de dados.
+     * @param colunas Nomes das colunas da tabela.
+     */
     protected void listar(D dao, String[] colunas) {
         var input = campoPesquisar.getText();
         List<T> itens = new ArrayList<>();
@@ -248,13 +265,25 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
         ajustarColunas();
     }
 
+    /**
+     * Cria um modelo de tabela com base nos itens fornecidos.
+     * @param itens Lista de itens a serem exibidos na tabela.
+     * @return Modelo de tabela criado.
+     */
     protected abstract TableModel criarTableModel(List<T> itens);
 
+    /**
+     * Ajusta automaticamente o tamanho das colunas da tabela.
+     */
     private void ajustarColunas() {
         var adjuster = new TableColumnAdjuster(tabelaPrincipal);
         adjuster.adjustColumns();
     }
 
+    /**
+     * Exclui um item com base na seleção do usuário na tabela.
+     * @return O ID do item excluído ou -1 se nenhum item estiver selecionado.
+     */
     protected int excluir() {
         var selectedRow = tabelaPrincipal.getSelectedRow();
         if (selectedRow < 0) {
@@ -271,24 +300,57 @@ public abstract class TelaPrincipalBase<T, D extends DAO<T>> extends JFrame {
         return (int) tabelaPrincipal.getValueAt(selectedRow, 0);
     }
 
+    /**
+     * Método abstrato para lidar com a inserção de um novo item.
+     * @param evt Evento associado à ação de inserção.
+     */
     protected abstract void inserir(ActionEvent evt);
 
+    /**
+     * Método abstrato para lidar com a edição de um item existente.
+     * @param evt Evento associado à ação de edição.
+     */
     protected abstract void editar(ActionEvent evt);
 
+    /**
+     * Método abstrato para configurar os campos da tabela.
+     */
     protected abstract void configurarCamposTabela();
 
+    /**
+     * Método abstrato para configurar o título da tela.
+     */
     protected abstract void configurarTitulo();
 
+    /**
+     * Método abstrato para configurar o campo de pesquisa.
+     */
     protected abstract void configurarCampoPesquisa();
 
+    /**
+     * Lista os itens com base na ação associada ao pressionar Enter no campo de pesquisa.
+     * @param e Evento associado à ação de pressionar Enter.
+     */
     private void listarComEnter(ActionEvent e) {
         listarAction(new ActionEvent(e.getSource(), e.getID(), null));
     }
 
+    /**
+     * Método abstrato para lidar com a ação de listar itens.
+     * @param env Evento associado à ação de listar.
+     */
     protected abstract void listarAction(ActionEvent env);
 
+    /**
+     * Método abstrato para lidar com a ação de exclusão de um item.
+     * @param evt Evento associado à ação de exclusão.
+     */
     protected abstract void excluirAction(ActionEvent evt);
 
+    /**
+     * Exibe a tela especificada. Se a tela já estiver aberta, a traz para frente.
+     * @param tela Classe da tela a ser exibida.
+     */
     protected static void tela(Class<? extends JFrame> tela) {
 
         if (!telaInstances.containsKey(tela)) {

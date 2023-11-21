@@ -6,26 +6,27 @@ import controle.matricula.model.Pessoa;
 import controle.matricula.util.Operacao;
 
 import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import static controle.matricula.util.Operacao.ATUALIZAR;
 import static controle.matricula.util.Operacao.INSERIR;
-import static java.awt.EventQueue.invokeLater;
-import static java.lang.Short.MAX_VALUE;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Logger.getLogger;
 import static javax.swing.GroupLayout.Alignment.*;
+import static java.lang.Short.MAX_VALUE;
 import static javax.swing.GroupLayout.DEFAULT_SIZE;
 import static javax.swing.GroupLayout.PREFERRED_SIZE;
 import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.LayoutStyle.ComponentPlacement.UNRELATED;
 import static javax.swing.SwingUtilities.getRoot;
-import static javax.swing.UIManager.getInstalledLookAndFeels;
-import static javax.swing.UIManager.setLookAndFeel;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.UIManager.*;
 
+/**
+ * Tela secundária para manipulação de disciplinas.
+ */
 public class TelaSecundariaDisciplina extends JFrame {
 
     private JPanel jPanel = new JPanel();
@@ -42,6 +43,9 @@ public class TelaSecundariaDisciplina extends JFrame {
     private Operacao operacao;
     private int id;
 
+    /**
+     * Construtor para uma nova disciplina (inserção).
+     */
     public TelaSecundariaDisciplina() {
         operacao = INSERIR;
 
@@ -53,6 +57,11 @@ public class TelaSecundariaDisciplina extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Construtor para a edição de uma disciplina existente.
+     *
+     * @param disciplina A disciplina a ser editada.
+     */
     public TelaSecundariaDisciplina(Disciplina disciplina) {
         operacao = ATUALIZAR;
         id = disciplina.getCodigo();
@@ -67,7 +76,6 @@ public class TelaSecundariaDisciplina extends JFrame {
     }
 
     private void initComponents() {
-
         campoNomeDisciplina.setText("Nome Disciplina:");
         campoCargaHoraria.setText("Carga Horaria:");
         campoProfessor.setText("Professor:");
@@ -146,11 +154,21 @@ public class TelaSecundariaDisciplina extends JFrame {
         );
     }
 
+    /**
+     * Fecha a janela ao clicar no botão Cancelar.
+     *
+     * @param evt Evento de ação.
+     */
     private void btnCancelar(ActionEvent evt) {
         var frame = (JFrame) getRoot((Component) evt.getSource());
         frame.dispose();
     }
 
+    /**
+     * Confirma a operação e fecha a janela ao clicar no botão Confirmar.
+     *
+     * @param evt Evento de ação.
+     */
     private void btnConfirmar(ActionEvent evt) {
         var telaPrincipal = new TelaPrincipalDisciplina();
         if (telaPrincipal.processarUsuario(id, textNomeDisciplina, textCargaHoraria, textProfessor, textLimiteAlunos, operacao)) {
@@ -158,12 +176,20 @@ public class TelaSecundariaDisciplina extends JFrame {
         }
     }
 
+    /**
+     * Preenche os campos da tela com os dados da disciplina.
+     *
+     * @param disciplina Objeto Disciplina contendo os dados.
+     */
     private void preencherCampo(Disciplina disciplina) {
         textNomeDisciplina.setText(disciplina.getNomeDisciplina());
         textCargaHoraria.setText(String.valueOf(disciplina.getCargaHoraria()));
         textLimiteAlunos.setText(String.valueOf(disciplina.getLimiteAlunos()));
     }
 
+    /**
+     * Inicializa os campos da tela.
+     */
     private void inicializarCampos() {
         textNomeDisciplina = new JTextField();
         textCargaHoraria = new JTextField();
@@ -171,6 +197,11 @@ public class TelaSecundariaDisciplina extends JFrame {
         textLimiteAlunos = new JTextField();
     }
 
+    /**
+     * Configura o ComboBox de professores com base na disciplina fornecida.
+     *
+     * @param disciplina Objeto Disciplina contendo os dados.
+     */
     private void professorSetComboBox(Disciplina disciplina) {
         var professorAtual = disciplina.getProfessor().getNomePessoa();
 
@@ -186,7 +217,6 @@ public class TelaSecundariaDisciplina extends JFrame {
 
         lista.add(new Pessoa(0, professorAtual, "", "", "", "", "", "Professor"));
 
-
         lista.addAll(professorList);
 
         var pessoaComboBoxModel = new DefaultComboBoxModel<>(lista.toArray(new Pessoa[0]));
@@ -194,6 +224,9 @@ public class TelaSecundariaDisciplina extends JFrame {
         textProfessor.setModel(pessoaComboBoxModel);
     }
 
+    /**
+     * Configura o ComboBox de professores sem considerar uma disciplina específica.
+     */
     private void professorSetComboBox() {
         var pessoaDAO = new PessoaDAOImpl();
         var professor = pessoaDAO.findAll();
@@ -206,6 +239,12 @@ public class TelaSecundariaDisciplina extends JFrame {
         textProfessor.setModel(pessoaComboBoxModel);
     }
 
+
+    /**
+     * Método para exibir a tela secundária de disciplinas.
+     *
+     * @param disciplina A disciplina a ser editada (pode ser nulo para inserção).
+     */
     public void telaSecundariaDisciplina(Disciplina disciplina) {
         try {
             for (LookAndFeelInfo info : getInstalledLookAndFeels()) {
